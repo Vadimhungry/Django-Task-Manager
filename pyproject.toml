@@ -13,6 +13,9 @@ python-dotenv = "^1.0.1"
 gunicorn = "^21.2.0"
 whitenoise = "^6.6.0"
 psycopg2-binary = "^2.9.9"
+django-extensions = "^3.2.3"
+ipython = "^8.20.0"
+dj-database-url = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"
