@@ -1,0 +1,10 @@
+venv/
+dist/
+.idea/
+test_files/
+**/__pycache__
+.env
+.DS_Store
+.coverage
+coverage.xml
+db.sqlite3
