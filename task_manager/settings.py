@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'python-project-52-production-9e9a.up.railway.app',
     "webserver"
 ]
 
