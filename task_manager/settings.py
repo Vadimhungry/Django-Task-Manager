@@ -13,6 +13,7 @@ import os
 import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 
 # get env variables
@@ -31,6 +32,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG')
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'python-project-52-production-9e9a.up.railway.app',
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "task_manager.users"
 ]
 
 MIDDLEWARE = [

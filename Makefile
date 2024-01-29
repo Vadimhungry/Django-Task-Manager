@@ -6,3 +6,6 @@ shell:
 
 install:
 	poetry install
+
+start:
+	@$(MANAGE) runserver
