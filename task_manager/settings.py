@@ -35,8 +35,8 @@ DEBUG = os.getenv('DJANGO_DEBUG')
 AUTH_USER_MODEL = 'users.CustomUser'
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'python-project-52-production-9e9a.up.railway.app',
+    "127.0.0.1",
+    "https://python-project-52-production-9e9a.up.railway.app/",
     "webserver"
 ]
 
@@ -149,3 +149,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
+
+SECURE_BROWSER_XSS_FILTER = True
