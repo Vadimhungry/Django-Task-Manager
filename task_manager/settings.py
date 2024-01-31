@@ -35,9 +35,9 @@ DEBUG = os.getenv('DJANGO_DEBUG')
 AUTH_USER_MODEL = 'users.CustomUser'
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "https://python-project-52-production-9e9a.up.railway.app/",
-    "webserver"
+    '127.0.0.1',
+    'python-project-52-production-9e9a.up.railway.app',
+    'webserver',
 ]
 
 
