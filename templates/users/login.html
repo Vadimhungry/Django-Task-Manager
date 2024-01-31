@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container wrapper flex-grow-1">
+        <h1 class="my-4">Вход</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form }}
+
+            <input type="submit" class="btn btn-primary" value="Войти">
+        </form>
+{% endblock %}

@@ -24,16 +24,32 @@
         </ul>
         <ul class="navbar-nav">
 
-            <li class="nav-item">
-                <a class="nav-link" href="/login/">{% translate "Log in" %}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/users/create/">{% translate "Sign Up" %}</a>
-            </li>
+
+            {% if user.is_authenticated %}
+                <!-- HTML шаблон для кнопки выхода -->
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}" class="nav-link">
+                        {% csrf_token %}
+                        <button type="submit" class="btn nav-link" style="text-decoration: none;">
+                            {% translate "Logout" %}
+                        </button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_login' %}">{% translate "Log in" %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_create' %}">{% translate "Sign Up" %}</a>
+                </li>
+            {% endif %}
 
         </ul>
     </div>
 </nav>
+{% if user.is_authenticated %}
+    <h1>Вы аутентифицированы!</h1>
+{% endif %}
 {% block content %}{% endblock %}
 <footer>
     <div class="container my-5 pt-4 border-top">

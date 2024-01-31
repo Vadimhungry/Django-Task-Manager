@@ -16,6 +16,7 @@ django-extensions = "^3.2.3"
 ipython = "^8.20.0"
 dj-database-url = "^2.1.0"
 django-bootstrap5 = "^23.4"
+django-crispy-forms = "^2.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"
