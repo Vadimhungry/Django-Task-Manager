@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomAuthForm
 from django.views import View
 from task_manager.users.models import CustomUser
 from django.contrib.auth.views import LoginView
@@ -50,6 +50,6 @@ class UserUpdateFormView(View):
 
 
 class UserLoginView(LoginView):
-    form_class = AuthenticationForm
+    form_class = CustomAuthForm
     template_name = "users/login.html"
     next_page = "index"

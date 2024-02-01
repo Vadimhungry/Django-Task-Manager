@@ -5,8 +5,17 @@
         <form method="post">
             {% csrf_token %}
 
-            {{ form }}
+            <div>
+                <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
+                {{ form.username }}
+            </div>
+
+            <div>
+                <label for="{{ form.password.id_for_label }}">Пароль:</label>
+                {{ form.password }}
+            </div>
 
             <input type="submit" class="btn btn-primary" value="Войти">
+
         </form>
 {% endblock %}
