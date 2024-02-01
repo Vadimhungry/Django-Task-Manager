@@ -53,3 +53,19 @@ class UserLoginView(LoginView):
     form_class = CustomAuthForm
     template_name = "users/login.html"
     next_page = "index"
+
+
+class UserDeleteFormView(View):
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.get('user_id')
+        user = CustomUser.objects.get(id=user_id)
+        return render(
+            request, "users/delete_user.html", {"user": user}
+        )
+
+    def post(self, request, *args, **kwargs):
+        user_id = kwargs.get('user_id')
+        user = CustomUser.objects.get(id=user_id)
+        if user:
+            user.delete()
+        return redirect('users_index')
