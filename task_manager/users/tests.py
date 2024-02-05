@@ -34,6 +34,7 @@ class TestUsers(TestCase):
         # Check if the response redirects to the 'user_login' URL
         self.assertRedirects(response, reverse('user_login'), status_code=302)
 
+
     def test_user_login(self):
         valid_form_data = {
             'first_name': 'Ivan',
@@ -56,3 +57,19 @@ class TestUsers(TestCase):
         self.assertTrue('_auth_user_id' in self.client.session)
         self.assertRedirects(response, reverse_lazy("index"), status_code=302)
 
+
+    def test_user_update(self):
+        valid_form_data = {
+            'first_name': 'Ivan',
+            'last_name': 'Durak',
+            'username': 'testuser',
+            'password1': 'Testpassword12345',
+            'password2': 'Testpassword12345',
+        }
+
+        self.client.post(reverse("user_create"), valid_form_data)
+        user_id = CustomUser.objects.get(username='testuser').id
+        print('++++++++++')
+        print(user_id)
+        response = self.client.get(f"{user_id}/update/")
+        self.assertEqual(response.status_code, 200)
