@@ -9,3 +9,7 @@ install:
 
 start:
 	@$(MANAGE) runserver
+
+test:
+	@$(MANAGE) test --verbosity 2
+
