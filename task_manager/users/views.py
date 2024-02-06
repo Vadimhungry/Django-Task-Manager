@@ -26,14 +26,19 @@ class UserCreateFormView(View):
 
 class UserUpdateFormView(View):
     def get(self, request, *args, **kwargs):
+        current_user = request.user
         user_id = kwargs.get("user_id")
-        user = get_object_or_404(CustomUser, id=user_id)
-        form = CustomUserCreationForm(instance=user)
-        return render(
-            request,
-            "users/update_user.html",
-            {"form": form, "user_id": user_id}
-        )
+        if current_user.is_authenticated:
+            if (current_user.id == user_id
+                    or current_user.is_staff is True):
+                user = get_object_or_404(CustomUser, id=user_id)
+                form = CustomUserCreationForm(instance=user)
+                return render(
+                    request,
+                    "users/update_user.html",
+                    {"form": form, "user_id": user_id}
+                )
+        return redirect("users_index")
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
@@ -58,9 +63,16 @@ class UserLoginView(LoginView):
 
 class UserDeleteFormView(View):
     def get(self, request, *args, **kwargs):
+        current_user = request.user
         user_id = kwargs.get("user_id")
-        user = CustomUser.objects.get(id=user_id)
-        return render(request, "users/delete_user.html", {"user": user})
+        if current_user.is_authenticated:
+            if (current_user.id == user_id
+                    or current_user.is_staff is True):
+
+                user = CustomUser.objects.get(id=user_id)
+                return render(request, "users/delete_user.html", {"user": user})
+            return redirect("users_index")
+        return redirect("user_login")
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
