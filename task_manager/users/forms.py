@@ -1,5 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    UserChangeForm,
+    AuthenticationForm,
+)
 from .models import CustomUser
 
 
@@ -35,7 +39,6 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class CustomAuthForm(AuthenticationForm):
-
     def __init__(self, *args, **kwargs):
         super(CustomAuthForm, self).__init__(*args, **kwargs)
         self.fields["username"].widget.attrs["class"] = "form-control"

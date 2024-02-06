@@ -13,7 +13,7 @@ import os
 import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
+
 
 
 # get env variables
@@ -95,7 +95,9 @@ WSGI_APPLICATION = "task_manager.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if os.getenv("DATABASE_URL"):
     # use db from env if it exists
-    DATABASES = {"default": dj_database_url.config(default=os.getenv("DATABASE_URL"))}
+    DATABASES = {
+        "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    }
 else:
     DATABASES = {
         "default": {

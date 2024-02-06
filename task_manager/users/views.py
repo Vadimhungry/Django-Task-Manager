@@ -18,10 +18,9 @@ class UserCreateFormView(View):
 
     def post(self, request, *args, **kwargs):
         form = CustomUserCreationForm(request.POST)
-        if form.is_valid():  # Если данные корректные, то сохраняем данные формы
+        if form.is_valid():
             form.save()
-            return redirect("user_login")  # Редирект на указанный маршрут
-        # Если данные некорректные, то возвращаем человека обратно на страницу с заполненной формой
+            return redirect("user_login")
         return render(request, "users/create_user.html", {"form": form})
 
 
@@ -31,7 +30,9 @@ class UserUpdateFormView(View):
         user = get_object_or_404(CustomUser, id=user_id)
         form = CustomUserCreationForm(instance=user)
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
 
     def post(self, request, *args, **kwargs):
@@ -43,7 +44,9 @@ class UserUpdateFormView(View):
             return redirect("users_index")
 
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
 
 
@@ -55,15 +58,13 @@ class UserLoginView(LoginView):
 
 class UserDeleteFormView(View):
     def get(self, request, *args, **kwargs):
-        user_id = kwargs.get('user_id')
+        user_id = kwargs.get("user_id")
         user = CustomUser.objects.get(id=user_id)
-        return render(
-            request, "users/delete_user.html", {"user": user}
-        )
+        return render(request, "users/delete_user.html", {"user": user})
 
     def post(self, request, *args, **kwargs):
-        user_id = kwargs.get('user_id')
+        user_id = kwargs.get("user_id")
         user = CustomUser.objects.get(id=user_id)
         if user:
             user.delete()
-        return redirect('users_index')
+        return redirect("users_index")
