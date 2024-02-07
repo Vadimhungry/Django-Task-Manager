@@ -13,3 +13,6 @@ start:
 test:
 	@$(MANAGE) test --verbosity 2
 
+migrations:
+	@$(MANAGE) makemigrations
+	@$(MANAGE) migrate

@@ -10,7 +10,7 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ms-3">
     <a class="navbar-brand" href="/">{% translate "Task manager" %}</a>
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent">
         <span class="navbar-toggler-icon"></span>
@@ -21,14 +21,22 @@
                 <a class="nav-link" href="/users/">{% translate "Users" %}</a>
             </li>
 
-        </ul>
-        <ul class="navbar-nav">
-
-
             {% if user.is_authenticated %}
-                <!-- HTML шаблон для кнопки выхода -->
+
                 <li class="nav-item">
-                    <form method="post" action="{% url 'logout' %}" class="nav-link">
+                    <a class="nav-link" href="/statuses/">{% translate "Stasuses" %}</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/labels/">{% translate "Labels" %}</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/tasks/">{% translate "Tasks" %}</a>
+                </li>
+
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn nav-link" style="text-decoration: none;">
                             {% translate "Logout" %}
@@ -36,9 +44,11 @@
                     </form>
                 </li>
             {% else %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'user_login' %}">{% translate "Log in" %}</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'user_create' %}">{% translate "Sign Up" %}</a>
                 </li>

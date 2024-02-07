@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+    <div class="container wrapper flex-grow-1">
+
+        <h1 class="my-4">Статусы</h1>
+
+        <a class="btn btn-primary mb-3" href="/statuses/create/">Создать статус</a>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Дата создания</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for status in statuses %}
+            <tr>
+                <td>{{ status.id }}</td>
+                <td>{{ status.name }}</td>
+                <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="/statuses/{{ status.id }}/update/">Изменить</a>
+                    <br>
+                    <a href="/statuses/{{ status.id }}/delete/">Удалить</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
+{% endblock %}
