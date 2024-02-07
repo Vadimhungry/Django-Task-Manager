@@ -50,3 +50,19 @@ class StatusUpdateFormView(View):
             "statuses/update_status.html",
             {"form": form, "status_id": status_id}
         )
+
+class StatusDeleteFormView(View):
+
+    def get(self, request, *args, **kwargs):
+        status_id = kwargs.get("status_id")
+
+        status = Status.objects.get(id=status_id)
+        return render(request, "statuses/delete_status.html", {"status": status})
+
+
+    def post(self, request, *args, **kwargs):
+        status_id = kwargs.get("status_id")
+        status = Status.objects.get(id=status_id)
+        if status:
+            status.delete()
+        return redirect("statuses_index")
