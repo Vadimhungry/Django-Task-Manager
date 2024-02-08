@@ -3,6 +3,8 @@ from .forms import CustomUserCreationForm, CustomAuthForm
 from django.views import View
 from task_manager.users.models import CustomUser
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
 
 
 class IndexView(View):
@@ -20,25 +22,36 @@ class UserCreateFormView(View):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(self.request, "Пользователь успешно зарегистрирован")
             return redirect("user_login")
         return render(request, "users/create_user.html", {"form": form})
 
 
-class UserUpdateFormView(View):
-    def get(self, request, *args, **kwargs):
-        current_user = request.user
-        user_id = kwargs.get("user_id")
+class UserUpdateFormView(UserPassesTestMixin, View):
+
+    def test_func(self):
+        current_user = self.request.user
+        user_id = self.kwargs.get("user_id")
         if current_user.is_authenticated:
             if (current_user.id == user_id
                     or current_user.is_staff is True):
-                user = get_object_or_404(CustomUser, id=user_id)
-                form = CustomUserCreationForm(instance=user)
-                return render(
-                    request,
-                    "users/update_user.html",
-                    {"form": form, "user_id": user_id}
-                )
+                return True
+        return False
+
+    def handle_no_permission(self):
         return redirect("users_index")
+
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.get("user_id")
+        user = get_object_or_404(CustomUser, id=user_id)
+        form = CustomUserCreationForm(instance=user)
+        return render(
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
+        )
+
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
@@ -60,19 +73,35 @@ class UserLoginView(LoginView):
     template_name = "users/login.html"
     next_page = "index"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Вы залогинены")
+        return response
 
-class UserDeleteFormView(View):
-    def get(self, request, *args, **kwargs):
-        current_user = request.user
-        user_id = kwargs.get("user_id")
+
+class UserDeleteFormView(UserPassesTestMixin, View):
+
+    def test_func(self):
+        current_user = self.request.user
+        user_id = self.kwargs.get("user_id")
         if current_user.is_authenticated:
             if (current_user.id == user_id
                     or current_user.is_staff is True):
+                return True
+        return False
 
-                user = CustomUser.objects.get(id=user_id)
-                return render(request, "users/delete_user.html", {"user": user})
-            return redirect("users_index")
-        return redirect("user_login")
+    def handle_no_permission(self):
+        return redirect("users_index")
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.get("user_id")
+        user = CustomUser.objects.get(id=user_id)
+        return render(
+            request,
+            "users/delete_user.html",
+            {"user": user}
+        )
+
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")

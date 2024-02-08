@@ -7,6 +7,7 @@ from .views import (
     UserDeleteFormView,
 )
 from django.contrib.auth import views as auth_views
+from .signals import on_user_logged_out
 
 
 urlpatterns = [
