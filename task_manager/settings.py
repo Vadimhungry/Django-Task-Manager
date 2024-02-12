@@ -15,7 +15,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-
 # get env variables
 load_dotenv()
 
@@ -40,9 +39,7 @@ ALLOWED_HOSTS = [
     "webserver",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://python-project-52-production-9e9a.up.railway.app"
-]
+CSRF_TRUSTED_ORIGINS = ["https://python-project-52-production-9e9a.up.railway.app"]
 
 # Application definition
 
@@ -56,6 +53,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "task_manager.users",
     "task_manager.statuses",
+    "task_manager.tasks",
     "crispy_forms",
 ]
 
@@ -96,9 +94,7 @@ WSGI_APPLICATION = "task_manager.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if os.getenv("DATABASE_URL"):
     # use db from env if it exists
-    DATABASES = {
-        "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
-    }
+    DATABASES = {"default": dj_database_url.config(default=os.getenv("DATABASE_URL"))}
 else:
     DATABASES = {
         "default": {

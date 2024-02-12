@@ -1,8 +1,9 @@
 from django import forms
 from .models import Status
 
+
 class StatusCreateForm(forms.ModelForm):
-    name = forms.CharField(label='Имя')
+    name = forms.CharField(label="Имя")
 
     def __init__(self, *args, **kwargs):
         super(StatusCreateForm, self).__init__(*args, **kwargs)
@@ -11,4 +12,4 @@ class StatusCreateForm(forms.ModelForm):
 
     class Meta:
         model = Status
-        fields = ['name']
+        fields = ["name"]

@@ -28,30 +28,25 @@ class UserCreateFormView(View):
 
 
 class UserUpdateFormView(UserPassesTestMixin, View):
-
     def test_func(self):
         current_user = self.request.user
         user_id = self.kwargs.get("user_id")
         if current_user.is_authenticated:
-            if (current_user.id == user_id
-                    or current_user.is_staff is True):
+            if current_user.id == user_id or current_user.is_staff is True:
                 return True
         return False
 
     def handle_no_permission(self):
+        messages.success(self.request, "У вас нет прав для изменения другого пользователя.")
         return redirect("users_index")
-
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
         user = get_object_or_404(CustomUser, id=user_id)
         form = CustomUserCreationForm(instance=user)
         return render(
-            request,
-            "users/update_user.html",
-            {"form": form, "user_id": user_id}
+            request, "users/update_user.html", {"form": form, "user_id": user_id}
         )
-
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
@@ -59,12 +54,11 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         form = CustomUserCreationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            messages.success(self.request, "Пользователь успешно изменен")
             return redirect("users_index")
 
         return render(
-            request,
-            "users/update_user.html",
-            {"form": form, "user_id": user_id}
+            request, "users/update_user.html", {"form": form, "user_id": user_id}
         )
 
 
@@ -80,13 +74,11 @@ class UserLoginView(LoginView):
 
 
 class UserDeleteFormView(UserPassesTestMixin, View):
-
     def test_func(self):
         current_user = self.request.user
         user_id = self.kwargs.get("user_id")
         if current_user.is_authenticated:
-            if (current_user.id == user_id
-                    or current_user.is_staff is True):
+            if current_user.id == user_id or current_user.is_staff is True:
                 return True
         return False
 
@@ -96,12 +88,7 @@ class UserDeleteFormView(UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
         user = CustomUser.objects.get(id=user_id)
-        return render(
-            request,
-            "users/delete_user.html",
-            {"user": user}
-        )
-
+        return render(request, "users/delete_user.html", {"user": user})
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")

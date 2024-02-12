@@ -7,7 +7,6 @@ from django.contrib import messages
 
 
 class IndexView(UserPassesTestMixin, View):
-
     def test_func(self):
         current_user = self.request.user
         if current_user.is_authenticated:
@@ -16,12 +15,13 @@ class IndexView(UserPassesTestMixin, View):
 
     def handle_no_permission(self):
         return redirect("user_login")
+
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()[:15]
         return render(request, "statuses/index.html", context={"statuses": statuses})
 
-class StatusCreateFormView(UserPassesTestMixin, View):
 
+class StatusCreateFormView(UserPassesTestMixin, View):
     def test_func(self):
         current_user = self.request.user
         if current_user.is_authenticated:
@@ -45,7 +45,6 @@ class StatusCreateFormView(UserPassesTestMixin, View):
 
 
 class StatusUpdateFormView(UserPassesTestMixin, View):
-
     def test_func(self):
         current_user = self.request.user
         if current_user.is_authenticated:
@@ -54,6 +53,7 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
 
     def handle_no_permission(self):
         return redirect("user_login")
+
     def get(self, request, *args, **kwargs):
         current_user = request.user
         status_id = kwargs.get("status_id")
@@ -63,7 +63,7 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
         return render(
             request,
             "statuses/update_status.html",
-            {"form": form, "status_id": status_id}
+            {"form": form, "status_id": status_id},
         )
         return redirect("ustatuses_index")
 
@@ -79,11 +79,11 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
         return render(
             request,
             "statuses/update_status.html",
-            {"form": form, "status_id": status_id}
+            {"form": form, "status_id": status_id},
         )
 
-class StatusDeleteFormView(UserPassesTestMixin, View):
 
+class StatusDeleteFormView(UserPassesTestMixin, View):
     def test_func(self):
         current_user = self.request.user
         if current_user.is_authenticated:
@@ -98,7 +98,6 @@ class StatusDeleteFormView(UserPassesTestMixin, View):
 
         status = Status.objects.get(id=status_id)
         return render(request, "statuses/delete_status.html", {"status": status})
-
 
     def post(self, request, *args, **kwargs):
         status_id = kwargs.get("status_id")

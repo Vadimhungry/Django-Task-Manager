@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+    <div class="container wrapper flex-grow-1">
+
+        <h1 class="my-4">Задачи</h1>
+
+        <a class="btn btn-primary mb-3" href="/tasks/create/">Создать задачу</a>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Статус</th>
+                <th>Автор</th>
+                <th>Исполнитель</th>
+                <th>Дата создания</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.name }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.author.username }}</td>
+                <td>{{ task.executor.username }}</td>
+                <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="/tasks/{{ status.id }}/update/">Изменить</a>
+                    <br>
+                    <a href="/tasks/{{ status.id }}/delete/">Удалить</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">Создать задачу</h1>
+
+    {% if form.errors %}
+        <div>
+            <ul>
+                {% for error in form.errors %}
+                    <li><strong>{{ error|escape }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+        <form action="{% url 'task_create' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
+                {{ form.name }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.description.id_for_label }}">Описание</label>
+                {{ form.description }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.status.id_for_label }}">Статус</label>
+                {{ form.status }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.executor.id_for_label }}">Исполнитель</label>
+                {{ form.executor }}
+            </div>
+            <input class="btn btn-primary" type="submit" value="Создать">
+        </form>
+    </div>
+{% endblock %}
