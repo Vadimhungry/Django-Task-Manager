@@ -2,9 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Task
 from .forms import TaskCreateForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import UserPassesTestMixin
+import time
+
+
 
 class IndexView(View):
 
@@ -22,21 +27,42 @@ class IndexView(View):
         return render(request, "tasks/index.html", context={"tasks": tasks})
 
 
-class TaskCreate(View):
+class TaskCreate(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskCreateForm
+    template_name = 'tasks/create_task.html'  # Шаблон для отображения формы
+    success_url = reverse_lazy('tasks_index')  # URL для перенаправления после успешного создания объекта
 
-    @method_decorator(login_required)
-    def get(self, request, *args, **kwargs):
-        form = TaskCreateForm()
-        return render(request, "tasks/create_task.html", {"form": form})
+    def form_valid(self, form):
+        messages.success(self.request, "Задача успешно создана")
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-    @method_decorator(login_required)
-    def post(self, request, *args, **kwargs):
-        form = TaskCreateForm(request.POST)
-        form.fields['author'] = request.user
-        if form.is_valid():
-            task = form.save(commit=False)
-            # task.author = request.user  # Задаем текущего пользователя в качестве автора задачи
-            task.save()
-            messages.success(request, "Задача успешно создана")
-            return redirect("tasks_index")
-        return render(request, "tasks/create_task.html", {"form": form})
+class TaskUpdate(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskCreateForm
+    template_name = 'tasks/update_task.html'
+    success_url = reverse_lazy('tasks_index')
+
+    def get_object(self, queryset=None):
+        task_id = self.kwargs.get('task_id')
+        return get_object_or_404(Task, id=task_id)
+
+
+class TaskDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Task
+    success_url = reverse_lazy('tasks_index')
+    template_name = 'tasks/delete_task.html'
+    def test_func(self):
+        task_id = self.kwargs.get('task_id')
+        task = Task.objects.get(id=task_id)
+        return task.author == self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Задача успешно удалена")
+        return super().delete(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        task_id = self.kwargs.get('task_id')
+        return get_object_or_404(Task, id=task_id)
+
