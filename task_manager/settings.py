@@ -13,6 +13,16 @@ import os
 import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
+from django.contrib.messages import constants as message_constants
+
+MESSAGE_TAGS = {
+    message_constants.INFO: "",
+    message_constants.DEBUG: "debug",
+    message_constants.INFO: "info",
+    message_constants.SUCCESS: "alert-success",
+    message_constants.WARNING: "alert-danger",
+    message_constants.ERROR: "error",
+}
 
 
 # get env variables

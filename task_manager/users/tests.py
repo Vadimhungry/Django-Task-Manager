@@ -31,7 +31,9 @@ class TestUsers(TestCase):
         }
 
         # Отправляем POST запрос с валидными данными формы
-        response = self.client.post(reverse("user_create"), valid_form_data, follow=True)
+        response = self.client.post(
+            reverse("user_create"), valid_form_data, follow=True
+        )
 
         # Проверяем, что ответ содержит сообщение об успешной регистрации
         self.assertContains(response, "Пользователь успешно зарегистрирован")
@@ -78,7 +80,9 @@ class TestUsers(TestCase):
         # Отправляем GET запрос на страницу обновления пользователя
         response = self.client.get(f"/users/{user_id}/update/", follow=True)
         self.assertEqual(response.status_code, 200)  # Проверяем, что страница доступна
-        self.assertContains(response, "У вас нет прав для изменения другого пользователя.")
+        self.assertContains(
+            response, "У вас нет прав для изменения другого пользователя."
+        )
 
         # login as 2testuser
         login_url = reverse("user_login")
@@ -101,4 +105,4 @@ class TestUsers(TestCase):
         user_id = CustomUser.objects.get(username="2testuser").id
         update_url = reverse("user_update", kwargs={"user_id": user_id})
         response = self.client.post(update_url, data=new_form_data, follow=True)
-        self.assertContains(response,"Пользователь успешно изменен")
+        self.assertContains(response, "Пользователь успешно изменен")

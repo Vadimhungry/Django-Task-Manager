@@ -3,8 +3,13 @@ from .forms import CustomUserCreationForm, CustomAuthForm
 from django.views import View
 from task_manager.users.models import CustomUser
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy, reverse
+from django.db.models.deletion import ProtectedError
 
 
 class IndexView(View):
@@ -22,7 +27,11 @@ class UserCreateFormView(View):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(self.request, "Пользователь успешно зарегистрирован")
+            messages.success(
+                self.request,
+                "Пользователь успешно зарегистрирован",
+                extra_tags="alert-success",
+            )
             return redirect("user_login")
         return render(request, "users/create_user.html", {"form": form})
 
@@ -37,7 +46,9 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         return False
 
     def handle_no_permission(self):
-        messages.success(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.warning(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
         return redirect("users_index")
 
     def get(self, request, *args, **kwargs):
@@ -73,26 +84,50 @@ class UserLoginView(LoginView):
         return response
 
 
-class UserDeleteFormView(UserPassesTestMixin, View):
+class UserDeleteFormView(
+    SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView
+):
+    model = CustomUser
+    success_url = reverse_lazy("users_index")
+    template_name = "users/delete_user.html"
+    success_message = "Пользователь успешно удален"
+
     def test_func(self):
         current_user = self.request.user
         user_id = self.kwargs.get("user_id")
-        if current_user.is_authenticated:
-            if current_user.id == user_id or current_user.is_staff is True:
-                return True
+        if current_user.id == user_id or current_user.is_staff is True:
+            return True
         return False
 
-    def handle_no_permission(self):
-        return redirect("users_index")
+    def get_object(self, queryset=None):
+        user_id = self.kwargs.get("user_id")
+        return get_object_or_404(CustomUser, id=user_id)
 
-    def get(self, request, *args, **kwargs):
-        user_id = kwargs.get("user_id")
-        user = CustomUser.objects.get(id=user_id)
-        return render(request, "users/delete_user.html", {"user": user})
+    def handle_no_permission(self):
+        messages.warning(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
+        return redirect("users_index")
 
     def post(self, request, *args, **kwargs):
-        user_id = kwargs.get("user_id")
-        user = CustomUser.objects.get(id=user_id)
-        if user:
-            user.delete()
-        return redirect("users_index")
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.warning(
+                self.request,
+                "Невозможно удалить пользователя, потому что он используется",
+            )
+            return redirect("users_index")
+
+            # def get(self, request, *args, **kwargs):
+
+    #     user_id = kwargs.get("user_id")
+    #     user = CustomUser.objects.get(id=user_id)
+    #     return render(request, "users/delete_user.html", {"user": user})
+    #
+    # def post(self, request, *args, **kwargs):
+    #     user_id = kwargs.get("user_id")
+    #     user = CustomUser.objects.get(id=user_id)
+    #     if user:
+    #         user.delete()
+    #     return redirect("users_index")

@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from .models import Status
 
 
@@ -30,9 +30,9 @@ class TestStatuses(TestCase):
         self.assertEqual(response.status_code, 200)
         status_create_url = reverse("status_create")
         data = {"name": "fun status"}
+
         response = self.client.post(status_create_url, data, follow=True)
         self.assertContains(response, "Статус успешно создан")
-
 
     def test_index(self):
         response = self.client.get("/statuses/")
@@ -45,7 +45,6 @@ class TestStatuses(TestCase):
         data = {"name": "fun status"}
         response = self.client.post(status_create_url, data, follow=True)
         self.assertContains(response, "Статус успешно создан")
-
 
     def test_update(self):
         response = self.client.get("/statuses/update/")
