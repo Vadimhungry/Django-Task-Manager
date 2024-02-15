@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "task_manager.users",
     "task_manager.statuses",
     "task_manager.tasks",
+    "task_manager.labels",
     "crispy_forms",
 ]
 
@@ -163,3 +164,5 @@ LOCALE_PATHS = [
 ]
 
 SECURE_BROWSER_XSS_FILTER = True
+
+SHELL_PLUS_PRINT_SQL = True

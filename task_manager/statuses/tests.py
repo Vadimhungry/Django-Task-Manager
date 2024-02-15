@@ -47,7 +47,6 @@ class TestStatuses(TestCase):
         self.assertContains(response, "Статус успешно создан")
 
     def test_update(self):
-        response = self.client.get("/statuses/update/")
 
         new_form_data = {
             "name": "Updated Status",

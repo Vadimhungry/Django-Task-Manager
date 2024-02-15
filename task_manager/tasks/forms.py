@@ -1,5 +1,4 @@
 from .models import Task
-from django import forms
 from django.forms import ModelForm
 
 
@@ -12,6 +11,7 @@ class TaskCreateForm(ModelForm):
         self.fields["description"].widget.attrs["placeholder"] = "Описание"
         self.fields["status"].widget.attrs["class"] = "form-select"
         self.fields["executor"].widget.attrs["class"] = "form-select"
+        self.fields["labels"].widget.attrs["class"] = "form-select"
         self.user = user
 
     class Meta:
@@ -21,4 +21,5 @@ class TaskCreateForm(ModelForm):
             "description",
             "status",
             "executor",
+            "labels"
         ]

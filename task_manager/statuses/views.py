@@ -69,7 +69,7 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
             "statuses/update_status.html",
             {"form": form, "status_id": status_id},
         )
-        return redirect("ustatuses_index")
+        return redirect("statuses_index")
 
     def post(self, request, *args, **kwargs):
         status_id = kwargs.get("status_id")

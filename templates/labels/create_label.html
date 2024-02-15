@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">Создать метку</h1>
+
+    {% if form.errors %}
+        <div>
+            <ul>
+                {% for error in form.errors %}
+                    <li><strong>{{ error|escape }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+        <form action="{% url 'label_create' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
+                {{ form.name }}
+            </div>
+            <input class="btn btn-primary" type="submit" value="Создать">
+        </form>
+    </div>
+{% endblock %}

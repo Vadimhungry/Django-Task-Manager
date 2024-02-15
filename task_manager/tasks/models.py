@@ -1,6 +1,7 @@
 from django.db import models
 from ..users.models import CustomUser
 from ..statuses.models import Status
+from  ..labels.models import Label
 
 
 class Task(models.Model):
@@ -14,3 +15,4 @@ class Task(models.Model):
     )
     status = models.ForeignKey(Status, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+    labels = models.ManyToManyField(Label)
