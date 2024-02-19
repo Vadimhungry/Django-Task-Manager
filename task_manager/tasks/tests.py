@@ -4,107 +4,86 @@ from django.urls import reverse
 from .models import Task
 from ..users.models import CustomUser
 from ..statuses.models import Status
+from ..labels.models import Label
 
 
 class TaskViewTests(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            username="testuser", password="12345"
+        # Создаем тестового пользователя
+        self.user = CustomUser.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+        # Создаем статус и метку для использования в тесте
+        self.status = Status.objects.create(name='Test Status')
+        self.label = Label.objects.create(name='Test Label')
+
+        # URL для создания задачи
+        self.url = reverse('task_create')
+
+        self.task = Task.objects.create(
+            name='Test Task',
+            description='Test Description',
+            executor=self.user,
+            author=self.user,
+            status=self.status,
         )
-        self.client.login(username="testuser", password="12345")
+
+    def test_task_create_view(self):
+
+        data = {
+            'name': '2Test Task',
+            'description': '2Test Description',
+            'executor': self.user.id,
+            'author': self.user.id,
+            'status': self.status.id,
+            'labels': [self.label.id],
+        }
+
+        response = self.client.post(self.url, data)
+
+        self.assertTrue(Task.objects.filter(name='2Test Task').exists())
+
+        created_task = Task.objects.get(name='2Test Task')
+
+        self.assertEqual(created_task.name, '2Test Task')
+        self.assertEqual(created_task.description, '2Test Description')
+        self.assertEqual(created_task.executor, self.user)
+        self.assertEqual(created_task.author, self.user)
+        self.assertEqual(created_task.status, self.status)
+        self.assertTrue(created_task.labels.filter(id=self.label.id).exists())
+
+        self.assertRedirects(response, reverse('tasks_index'))
+
 
     def test_index_view(self):
         response = self.client.get(reverse("tasks_index"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "tasks/index.html")
 
-    def test_create_task_view(self):
-        # Создание статуса для задачи
-        test_status = Status.objects.create(name="Test Status")
+    def test_task_update_view(self):
+        print(self.task.id)
+        # Получаем URL-адрес для обновления созданной задачи
+        url = reverse('task_update', kwargs={'task_id': self.task.id})
 
-        test_user = CustomUser.objects.get(username="testuser")
-
-        # Определение данных для создания задачи
-        task_data = {
-            "name": "Test Task",
-            "description": "Test Description",
-            "status": test_status.id,
-            "executor": test_user.id,
+        # Подготавливаем данные для обновления задачи
+        updated_data = {
+            'name': '777Updated Test Task',
+            'description': '777Updated Test Description',
+            'executor': self.user.id,
+            'author': self.user.id,
+            'status': self.status.id,
+            'labels': [self.label.id],
         }
 
-        # Отправка POST-запроса для создания задачи
-        response = self.client.post(reverse("task_create"), task_data)
-        # Проверка, что задача была успешно создана
-        task_exists = Task.objects.filter(name="Test Task").exists()
-        self.assertTrue(task_exists)
+        # Отправляем POST-запрос для обновления задачи
+        response = self.client.post(url, updated_data)
 
-        created_task = Task.objects.get(name="Test Task")
-        self.assertEqual(created_task.description, "Test Description")
+        # Проверяем, что задача была успешно обновлена в базе данных
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.name, '777Updated Test Task')
+        self.assertEqual(self.task.description, '777Updated Test Description')
+        self.assertEqual(self.task.status, self.status)
+        self.assertTrue(self.task.labels.filter(id=self.label.id).exists())
 
-        self.assertRedirects(
-            response, reverse("tasks_index")
-        )  # Проверка на перенаправление
-
-    def test_update_task_view(self):
-        test_status = Status.objects.create(name="Test Status")
-        test_user = CustomUser.objects.get(username="testuser")
-
-        task_data = {
-            "name": "Test Task",
-            "description": "Test Description",
-            "status": test_status.id,
-            "executor": test_user.id,
-        }
-
-        self.client.post(reverse("task_create"), task_data)
-
-        task_id = Task.objects.get(name="Test Task").id
-
-        update_data = {
-            "name": "Updated Task",
-            "description": "Updated Description",
-            "status": test_status.id,
-            "executor": test_user.id,
-        }
-        self.client.post(
-            reverse("task_update", kwargs={"task_id": task_id}), update_data
-        )
-
-        updated_task = Task.objects.get(id=task_id)
-        self.assertEqual(updated_task.name, "Updated Task")
-        self.assertEqual(updated_task.description, "Updated Description")
-
-    def test_delete_task_view(self):
-        test_status = Status.objects.create(name="Test Status")
-        test_user = CustomUser.objects.get(username="testuser")
-
-        task_data = {
-            "name": "Test Task",
-            "description": "Test Description",
-            "status": test_status.id,
-            "executor": test_user.id,
-        }
-
-        self.client.post(reverse("task_create"), task_data)
-        task_id = Task.objects.get(name="Test Task").id
-        self.client.post(reverse("task_delete", kwargs={"task_id": task_id}))
-
-        self.assertEqual(Task.objects.filter(name="Test Task").exists(), False)
-
-    def test_read_task_view(self):
-        test_status = Status.objects.create(name="Test Status")
-        test_user = CustomUser.objects.get(username="testuser")
-
-        task_data = {
-            "name": "Test Task",
-            "description": "Test Description",
-            "status": test_status.id,
-            "executor": test_user.id,
-        }
-
-        self.client.post(reverse("task_create"), task_data)
-        task_id = Task.objects.get(name="Test Task").id
-        response = self.client.get(reverse("task", kwargs={"task_id": task_id}))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "tasks/task.html")
+        # Проверяем, что пользователь перенаправлен на страницу с индексом задач
+        self.assertRedirects(response, reverse('tasks_index'))

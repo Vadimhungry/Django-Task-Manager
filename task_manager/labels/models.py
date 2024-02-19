@@ -12,15 +12,3 @@ class Label(models.Model):
 
     def __str__(self):
         return self.name
-
-    def can_be_deleted(self):
-        return not self.task_set.exists()
-
-
-@receiver(pre_delete, sender=Label)
-def prevent_label_deletion(sender, instance, **kwargs):
-    if instance.can_be_deleted():
-        return
-    else:
-        # Отменяем удаление метки
-        raise ValueError("Cannot delete label because it is associated with tasks.")

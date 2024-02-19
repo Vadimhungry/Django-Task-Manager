@@ -54,3 +54,8 @@ class LabelTest(TestCase):
         update_url = reverse("label_update", kwargs={"label_id": label_id})
         response = self.client.post(update_url, data=new_form_data, follow=True)
         self.assertContains(response, "Updated Label")
+
+    def test_delete(self):
+        label_id = Label.objects.get(name="fun label").id
+        self.client.post(reverse("label_delete", kwargs={"label_id": label_id}))
+        self.assertEqual(Label.objects.filter(name="fun label").exists(), False)

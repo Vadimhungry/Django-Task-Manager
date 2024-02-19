@@ -65,9 +65,14 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         label_id = self.kwargs.get("label_id")
         return get_object_or_404(Label, id=label_id)
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.can_be_deleted():
-            messages.error(request, "Cannot delete label because it is associated with tasks.")
-            return HttpResponseRedirect(self.success_url)
-        return super().delete(request, *args, **kwargs)
+        connected_task_exist = self.object.task_set.exists()
+        if connected_task_exist:
+            messages.warning(request, "Невозможно удалить метку, потому что она используется")
+            return redirect(reverse_lazy("labels_index"))
+        else:
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+            return redirect(success_url)
