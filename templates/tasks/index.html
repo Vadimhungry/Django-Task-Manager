@@ -9,6 +9,35 @@
     <h1 class="my-4">Задачи</h1>
 
     <a class="btn btn-primary mb-3" href="/tasks/create/">Создать задачу</a>
+<div class="card mb-3">
+    <div class="card-body bg-light">
+        <form class="form-inline center" method="get">
+            <div class="mb-3">
+                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Статус</label>
+                {{ filter.form.status }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Исполнитель</label>
+                {{ filter.form.executor }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Метки</label>
+                {{ filter.form.labels }}
+            </div>
+            <div class="mb-3">
+                <div class="form-check">
+                     {{ filter.form.created_by_current_user }}
+                <label class="form-check-label" for="{{ filter.form.status.id_for_label }}">Только свои задачи</label>
+                </div>
+
+
+            </div>
+            <button name="apply_filter" class="btn btn-primary" type="submit">Показать</button>
+        </form>
+    </div>
+</div>
+
+
 
     <table class="table table-striped">
         <thead>
@@ -40,6 +69,8 @@
         {% endfor %}
         </tbody>
     </table>
+
+
 
 
 

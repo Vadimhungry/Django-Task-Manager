@@ -5,6 +5,8 @@ from .models import Task
 from ..users.models import CustomUser
 from ..statuses.models import Status
 from ..labels.models import Label
+from task_manager.tasks.filters import TaskFilter
+from django.test import RequestFactory
 
 
 class TaskViewTests(TestCase):
@@ -87,3 +89,42 @@ class TaskViewTests(TestCase):
 
         # Проверяем, что пользователь перенаправлен на страницу с индексом задач
         self.assertRedirects(response, reverse('tasks_index'))
+
+
+class TaskFilterTestCase(TestCase):
+
+    def setUp(self):
+        # Создаем тестового пользователя
+        self.user = CustomUser.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+        # Создаем статус и метку для использования в тесте
+        self.status = Status.objects.create(name='Test Status')
+        self.label = Label.objects.create(name='Test Label')
+
+        # URL для создания задачи
+        self.url = reverse('task_create')
+
+        self.task1 = Task.objects.create(
+            name='Test Task',
+            description='Test Description',
+            executor=self.user,
+            author=self.user,
+            status=self.status,
+        )
+        self.task2 = Task.objects.create(
+            name='2Test Task',
+            description='2Test Description',
+            executor=self.user,
+            author=self.user,
+            status=self.status,
+        )
+
+
+    def test_filter_created_by_current_user(self):
+        # Test for regular user
+        request = RequestFactory().get('/')
+        request.user = CustomUser.objects.create_user(username='regular_user', email='user@example.com', password='password')
+        filter = TaskFilter({'created_by_current_user': 'on'}, queryset=Task.objects.all(), request=request)
+        print(filter.qs)
+        self.assertQuerysetEqual(filter.qs, [])

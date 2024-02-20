@@ -18,6 +18,7 @@ dj-database-url = "^2.1.0"
 django-bootstrap5 = "^23.4"
 django-crispy-forms = "^2.1"
 django-filter = "^23.5"
+rollbar = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"

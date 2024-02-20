@@ -79,6 +79,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -167,3 +168,10 @@ LOCALE_PATHS = [
 SECURE_BROWSER_XSS_FILTER = True
 
 SHELL_PLUS_PRINT_SQL = True
+
+ROLLBAR = {
+    'access_token': '8421babc1eec4dc99b768c4831b94c0f',
+    'environment': 'development' if DEBUG else 'production',
+    'code_version': '1.0',
+    'root': BASE_DIR,
+}

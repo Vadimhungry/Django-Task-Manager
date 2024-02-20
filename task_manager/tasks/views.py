@@ -9,21 +9,23 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from .filters import TaskFilter
 
 
-class IndexView(View):
-    def test_func(self):
-        current_user = self.request.user
-        if current_user.is_authenticated:
-            return True
-        return False
-
-    def handle_no_permission(self):
-        return redirect("user_login")
+class IndexView(LoginRequiredMixin, View):
+    login_url = 'user_login'
 
     def get(self, request, *args, **kwargs):
-        tasks = Task.objects.all()[:15]
-        return render(request, "tasks/index.html", context={"tasks": tasks})
+        tasks = Task.objects.all()
+
+        # Инициализация фильтра с исходным queryset и передача request
+        filter = TaskFilter(request.GET, queryset=tasks, request=request)
+
+        # Применение фильтра, если он был отправлен
+        if 'apply_filter' in request.GET:
+            tasks = filter.qs
+
+        return render(request, "tasks/index.html", context={'filter': filter, 'tasks': tasks})
 
 
 class TaskCreate(LoginRequiredMixin, CreateView):
