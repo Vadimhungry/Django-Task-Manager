@@ -18,21 +18,21 @@
     <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/users/">{% translate "Users" %}</a>
+                <a class="nav-link" href="{% url 'users_index' %}">{% translate "Users" %}</a>
             </li>
 
             {% if user.is_authenticated %}
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/statuses/">{% translate "Stasuses" %}</a>
+                    <a class="nav-link" href="{% url 'statuses_index' %}">{% translate "Stasuses" %}</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/labels/">{% translate "Labels" %}</a>
+                    <a class="nav-link" href="{% url 'labels_index' %}">{% translate "Labels" %}</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/tasks/">{% translate "Tasks" %}</a>
+                    <a class="nav-link" href="{% url 'tasks_index' %}">{% translate "Tasks" %}</a>
                 </li>
 
                 <li class="nav-item">
@@ -71,10 +71,6 @@
         {% endfor %}
 
     {% endif %}
-
-
-
-
 
     {% block content %}{% endblock %}
 </div>

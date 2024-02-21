@@ -6,7 +6,7 @@
 
     <h1 class="my-4">Задачи</h1>
 
-    <a class="btn btn-primary mb-3" href="/tasks/create/">Создать задачу</a>
+    <a class="btn btn-primary mb-3" href="{% url 'task_create' %}/tasks/create/">Создать задачу</a>
 <div class="card mb-3">
     <div class="card-body bg-light">
         <form class="form-inline center" method="get">
@@ -59,9 +59,9 @@
                 <td>{{ task.executor.username }}</td>
                 <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="/tasks/{{ task.id }}/update/">Изменить</a>
+                    <a href="{% url 'task_update' task_id=task.id %}">Изменить</a>
                     <br>
-                    <a href="/tasks/{{ task.id }}/delete/">Удалить</a>
+                    <a href="{% url 'task_delete' task_id=task.id %}">Удалить</a>
                 </td>
             </tr>
         {% endfor %}

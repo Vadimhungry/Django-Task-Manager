@@ -7,7 +7,7 @@
 
         <h1 class="my-4">{% translate "Labels" %}</h1>
 
-        <a class="btn btn-primary mb-3" href="/labels/create/">{% translate "Create label" %}</a>
+        <a class="btn btn-primary mb-3" href="{% url 'label_create' %}">{% translate "Create label" %}</a>
 
         <table class="table table-striped">
             <thead>
@@ -25,9 +25,9 @@
                 <td>{{ label.name }}</td>
                 <td>{{ label.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="/labels/{{ label.id }}/update/">{% translate "Update" %}</a>
+                    <a href="{% url 'label_update' label_id=label.id %}">{% translate "Update" %}</a>
                     <br>
-                    <a href="/labels/{{ label.id }}/delete/">{% translate "Delete" %}</a>
+                    <a href="{% url 'label_delete' label_id=label.id %}">{% translate "Delete" %}</a>
                 </td>
             </tr>
             {% endfor %}
