@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm, CustomAuthForm
 from django.views import View
-from task_manager.users.models import CustomUser
+from .models import CustomUser
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.views.generic.edit import DeleteView

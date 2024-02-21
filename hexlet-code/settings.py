@@ -61,10 +61,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-    "task_manager.users",
-    "task_manager.statuses",
-    "task_manager.tasks",
-    "task_manager.labels",
+    "hexlet-code.users",
+    "hexlet-code.statuses",
+    "hexlet-code.tasks",
+    "hexlet-code.labels",
     "crispy_forms",
     "django_filters",
 ]
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
-ROOT_URLCONF = "task_manager.urls"
+ROOT_URLCONF = "hexlet-code.urls"
 
 TEMPLATES = [
     {
@@ -100,7 +100,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "task_manager.wsgi.application"
+WSGI_APPLICATION = "hexlet-code.wsgi.application"
 
 
 # Database
