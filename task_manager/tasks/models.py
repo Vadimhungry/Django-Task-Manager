@@ -1,7 +1,7 @@
 from django.db import models
 from ..users.models import CustomUser
 from ..statuses.models import Status
-from  ..labels.models import Label
+from ..labels.models import Label
 
 
 class Task(models.Model):

@@ -1,19 +1,16 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
 
-    <h1 class="my-4">
-
-        Пользователи
-
-    </h1>
+    <h1 class="my-4">{% translate "Users" %}</h1>
 
     <table class="table table-striped">
         <thead>
         <tr>
             <th>ID</th>
-            <th>Имя пользователя</th>
-            <th>Полное имя</th>
-            <th>Дата создания</th>
+            <th>{% translate "User name" %}</th>
+            <th>{% translate "Full name" %}</th>
+            <th>{% translate "Creation date" %}</th>
             <th></th>
         </tr>
         </thead>
@@ -25,9 +22,9 @@
                 <td>{{ user.first_name }} {{ user.last_name }}</td>
                 <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="/users/{{ user.id }}/update/">Изменить</a>
+                    <a href="/users/{{ user.id }}/update/">{% translate "Edit" %}</a>
                     <br>
-                    <a href="/users/{{ user.id }}/delete/">Удалить</a>
+                    <a href="/users/{{ user.id }}/delete/">{% translate "Delete" %}</a>
                 </td>
             </tr>
         {% endfor %}

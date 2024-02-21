@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     "task_manager.tasks",
     "task_manager.labels",
     "crispy_forms",
-    'django_filters',
+    "django_filters",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -170,8 +170,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SHELL_PLUS_PRINT_SQL = True
 
 ROLLBAR = {
-    'access_token': '8421babc1eec4dc99b768c4831b94c0f',
-    'environment': 'development' if DEBUG else 'production',
-    'code_version': '1.0',
-    'root': BASE_DIR,
+    "access_token": "8421babc1eec4dc99b768c4831b94c0f",
+    "environment": "development" if DEBUG else "production",
+    "code_version": "1.0",
+    "root": BASE_DIR,
 }

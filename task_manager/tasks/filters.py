@@ -6,34 +6,38 @@ from ..statuses.models import Status
 from ..users.models import CustomUser
 from ..labels.models import Label
 
+
 class TaskFilter(django_filters.FilterSet):
     status = django_filters.ModelChoiceFilter(
-        field_name='status',
+        field_name="status",
         queryset=Status.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select is-valid'}),
-        label='Статус'
+        widget=forms.Select(attrs={"class": "form-select is-valid"}),
+        label="Статус",
     )
     executor = django_filters.ModelChoiceFilter(
-        field_name='executor',
+        field_name="executor",
         queryset=CustomUser.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select is-valid'}),
-        label='Исполнитель'
+        widget=forms.Select(attrs={"class": "form-select is-valid"}),
+        label="Исполнитель",
     )
     labels = django_filters.ModelChoiceFilter(
-        field_name='labels',
+        field_name="labels",
         queryset=Label.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select is-valid'}),
-        label='Метки'
+        widget=forms.Select(attrs={"class": "form-select is-valid"}),
+        label="Метки",
     )
     created_by_current_user = django_filters.BooleanFilter(
-        field_name='author',
-        method='filter_created_by_current_user',
-        label='Только свои задачи',
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input is-valid'})
+        field_name="author",
+        method="filter_created_by_current_user",
+        label="Только свои задачи",
+        widget=forms.CheckboxInput(
+            attrs={"class": "form-check-input is-valid"}
+        ),
     )
+
     class Meta:
         model = Task
-        fields = ['status', 'executor', 'labels', 'created_by_current_user']
+        fields = ["status", "executor", "labels", "created_by_current_user"]
 
     def filter_created_by_current_user(self, queryset, name, value):
         if value:

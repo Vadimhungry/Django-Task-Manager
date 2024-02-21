@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
     <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">Создать задачу</h1>
+    <h1 class="my-4">{% translate "Create task" %}</h1>
 
     {% if form.errors %}
         <div>
@@ -16,26 +17,26 @@
         <form action="{% url 'task_create' %}" method="post">
             {% csrf_token %}
             <div class="mb-3">
-                <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
+                <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Name" %}</label>
                 {{ form.name }}
             </div>
             <div class="mb-3">
-                <label class="form-label" for="{{ form.description.id_for_label }}">Описание</label>
+                <label class="form-label" for="{{ form.description.id_for_label }}">{% translate "Description" %}</label>
                 {{ form.description }}
             </div>
             <div class="mb-3">
-                <label class="form-label" for="{{ form.status.id_for_label }}">Статус</label>
+                <label class="form-label" for="{{ form.status.id_for_label }}">{% translate "Status" %}</label>
                 {{ form.status }}
             </div>
             <div class="mb-3">
-                <label class="form-label" for="{{ form.executor.id_for_label }}">Исполнитель</label>
+                <label class="form-label" for="{{ form.executor.id_for_label }}">{% translate "Executor" %}</label>
                 {{ form.executor }}
             </div>
             <div class="mb-3">
-                <label class="form-label" for="id_labels">Метки</label>
+                <label class="form-label" for="id_labels">{% translate "Labels" %}</label>
                 {{ form.labels }}
             </div>
-            <input class="btn btn-primary" type="submit" value="Создать">
+            <input class="btn btn-primary" type="submit" value="{% translate "Create" %}">
         </form>
     </div>
 {% endblock %}

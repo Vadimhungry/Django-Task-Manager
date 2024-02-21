@@ -14,20 +14,33 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields["password1"].widget.attrs["class"] = "form-control"
         self.fields["password2"].widget.attrs["class"] = "form-control"
         self.fields["password1"].widget.attrs["placeholder"] = "Пароль"
-        self.fields["password2"].widget.attrs["placeholder"] = "Подтверждение пароля"
+        self.fields["password2"].widget.attrs["placeholder"] = \
+            "Подтверждение пароля"
 
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ("first_name", "last_name", "username", "password1", "password2")
+        fields = (
+            "first_name",
+            "last_name",
+            "username",
+            "password1",
+            "password2"
+        )
         widgets = {
             "first_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Имя"}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Имя"
+                }
             ),
             "last_name": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Фамилия"}
             ),
             "username": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Имя пользователя"}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Имя пользователя"
+                }
             ),
         }
 
@@ -42,7 +55,8 @@ class CustomAuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(CustomAuthForm, self).__init__(*args, **kwargs)
         self.fields["username"].widget.attrs["class"] = "form-control"
-        self.fields["username"].widget.attrs["placeholder"] = "Имя пользователя"
+        self.fields["username"].widget.attrs["placeholder"] = \
+            "Имя пользователя"
         self.fields["password"].widget.attrs["class"] = "form-control"
         self.fields["password"].widget.attrs["placeholder"] = "Пароль"
 

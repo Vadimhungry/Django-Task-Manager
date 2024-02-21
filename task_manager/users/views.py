@@ -8,8 +8,9 @@ from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.db.models.deletion import ProtectedError
+from django.utils.translation import gettext as _
 
 
 class IndexView(View):
@@ -29,7 +30,7 @@ class UserCreateFormView(View):
             form.save()
             messages.success(
                 self.request,
-                "Пользователь успешно зарегистрирован",
+                _("The user has been successfully registered"),
                 extra_tags="alert-success",
             )
             return redirect("user_login")
@@ -47,7 +48,8 @@ class UserUpdateFormView(UserPassesTestMixin, View):
 
     def handle_no_permission(self):
         messages.warning(
-            self.request, "У вас нет прав для изменения другого пользователя."
+            self.request,
+            _("You do not have permission to modify another user.")
         )
         return redirect("users_index")
 
@@ -56,7 +58,9 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         user = get_object_or_404(CustomUser, id=user_id)
         form = CustomUserCreationForm(instance=user)
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
 
     def post(self, request, *args, **kwargs):
@@ -65,11 +69,16 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         form = CustomUserCreationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(self.request, "Пользователь успешно изменен")
+            messages.success(
+                self.request,
+                _("The user has been successfully updated")
+            )
             return redirect("users_index")
 
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
 
 
@@ -80,7 +89,7 @@ class UserLoginView(LoginView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, "Вы залогинены")
+        messages.success(self.request, _("You are logged in"))
         return response
 
 
@@ -90,7 +99,7 @@ class UserDeleteFormView(
     model = CustomUser
     success_url = reverse_lazy("users_index")
     template_name = "users/delete_user.html"
-    success_message = "Пользователь успешно удален"
+    success_message = _("The user has been successfully deleted")
 
     def test_func(self):
         current_user = self.request.user
@@ -105,7 +114,8 @@ class UserDeleteFormView(
 
     def handle_no_permission(self):
         messages.warning(
-            self.request, "У вас нет прав для изменения другого пользователя."
+            self.request,
+            _("You do not have permission to modify another user.")
         )
         return redirect("users_index")
 
@@ -115,19 +125,6 @@ class UserDeleteFormView(
         except ProtectedError:
             messages.warning(
                 self.request,
-                "Невозможно удалить пользователя, потому что он используется",
+                _("Unable to delete the user because it is being used."),
             )
             return redirect("users_index")
-
-            # def get(self, request, *args, **kwargs):
-
-    #     user_id = kwargs.get("user_id")
-    #     user = CustomUser.objects.get(id=user_id)
-    #     return render(request, "users/delete_user.html", {"user": user})
-    #
-    # def post(self, request, *args, **kwargs):
-    #     user_id = kwargs.get("user_id")
-    #     user = CustomUser.objects.get(id=user_id)
-    #     if user:
-    #         user.delete()
-    #     return redirect("users_index")

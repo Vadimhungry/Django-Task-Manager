@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
 
-    <h1 class="my-4">Редактирование</h1>
+    <h1 class="my-4">{% translate "Edit" context "User edit" %}</h1>
 
     {% if form.errors %}
         <div>
@@ -15,10 +16,34 @@
 
     <form action="{% url 'user_update' user_id=user_id %}" method="post">
         {% csrf_token %}
-        <table border="1">
-            {{ form }}
-        </table>
-        <input type="submit" class="btn btn-primary" value="Изменить">
+        <div class="mb-3">
+                <label class="form-label" for="{{ form.first_name.id_for_label }}">{% translate "Name" %}</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.last_name.id_for_label }}">{% translate "Surname" %}</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.username.id_for_label }}">{% translate "User name" %}</label>
+                {{ form.username }}
+                <div class="form-text">{% translate "This field is required and must be no more than 150 characters. Only letters, numbers, and the symbols @/./+/-/_ are allowed." %}</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.password1.id_for_label }}">Пароль</label>
+                {{ form.password1 }}
+                <div class="form-text"><ul><li>{% translate "Your password must contain at least 3 characters." %}</li></ul></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.password2.id_for_label }}">{% translate "Password confirmation" %}</label>
+                {{ form.password2 }}
+                <div class="form-text">{% translate "To confirm, please enter your password again." %}</div>
+            </div>
+        <input type="submit" class="btn btn-primary" value="{% translate "Edit" %}">
     </form>
 
 {% endblock %}

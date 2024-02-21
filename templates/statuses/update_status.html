@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
     <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">Изменение статуса</h1>
+    <h1 class="my-4">{% translate "Edit status" %}</h1>
 
     {% if form.errors %}
         <div>
@@ -18,7 +19,7 @@
             <table border="1">
                 {{ form }}
             </table>
-            <input type="submit" class="btn btn-primary" value="Изменить">
+            <input type="submit" class="btn btn-primary" value="{% translate "Edit" %}">
         </form>
     </div>
 {% endblock %}

@@ -5,16 +5,16 @@
 {% block content %}
     <div class="container wrapper flex-grow-1">
 
-        <h1 class="my-4">Статусы</h1>
+        <h1 class="my-4">{% translate "Statuses" %}</h1>
 
-        <a class="btn btn-primary mb-3" href="/statuses/create/">Создать статус</a>
+        <a class="btn btn-primary mb-3" href="/statuses/create/">{% translate "Create status" %}</a>
 
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>Имя</th>
-                <th>Дата создания</th>
+                <th>{% translate "Name" %}</th>
+                <th>{% translate "Creation date" %}</th>
                 <th></th>
             </tr>
             </thead>
@@ -25,9 +25,9 @@
                 <td>{{ status.name }}</td>
                 <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="/statuses/{{ status.id }}/update/">Изменить</a>
+                    <a href="/statuses/{{ status.id }}/update/">{% translate "Edit" %}</a>
                     <br>
-                    <a href="/statuses/{{ status.id }}/delete/">Удалить</a>
+                    <a href="/statuses/{{ status.id }}/delete/">{% translate "Delete" %}</a>
                 </td>
             </tr>
             {% endfor %}

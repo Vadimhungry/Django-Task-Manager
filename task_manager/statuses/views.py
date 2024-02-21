@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic.edit import DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.db.models.deletion import ProtectedError
+from django.utils.translation import gettext as _
 
 
 class IndexView(UserPassesTestMixin, View):
@@ -22,7 +23,11 @@ class IndexView(UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()[:15]
-        return render(request, "statuses/index.html", context={"statuses": statuses})
+        return render(
+            request,
+            "statuses/index.html",
+            context={"statuses": statuses}
+        )
 
 
 class StatusCreateFormView(UserPassesTestMixin, View):
@@ -43,7 +48,7 @@ class StatusCreateFormView(UserPassesTestMixin, View):
         form = StatusCreateForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(self.request, "Статус успешно создан")
+            messages.success(self.request, _("Status successfully created"))
             return redirect("statuses_index")
         return render(request, "statuses/create_status.html", {"form": form})
 
@@ -59,7 +64,6 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
         return redirect("user_login")
 
     def get(self, request, *args, **kwargs):
-        current_user = request.user
         status_id = kwargs.get("status_id")
 
         status = get_object_or_404(Status, id=status_id)
@@ -77,7 +81,7 @@ class StatusUpdateFormView(UserPassesTestMixin, View):
         form = StatusCreateForm(request.POST, instance=status)
         if form.is_valid():
             form.save()
-            messages.success(self.request, "Статус успешно изменен")
+            messages.success(self.request, _("Status successfully updated"))
             return redirect("statuses_index")
 
         return render(
@@ -93,7 +97,7 @@ class StatusDeleteFormView(
     model = Status
     success_url = reverse_lazy("statuses_index")
     template_name = "statuses/delete_status.html"
-    success_message = "Статус успешно удален"
+    success_message = _("Status successfully deleted")
 
     def test_func(self):
         current_user = self.request.user
@@ -113,6 +117,7 @@ class StatusDeleteFormView(
             return super().post(request, *args, **kwargs)
         except ProtectedError:
             messages.warning(
-                self.request, "Невозможно удалить статус, потому что он используется"
+                self.request,
+                _("Unable to delete the status because it is in use")
             )
             return redirect("statuses_index")
