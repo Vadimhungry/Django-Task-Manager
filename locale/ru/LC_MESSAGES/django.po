@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-21 10:37+0200\n"
+"POT-Creation-Date: 2024-02-22 15:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,73 +18,77 @@ msgstr ""
 msgid "The label has been created successfully"
 msgstr "Метка успешно создана"
 
-#: task_manager/labels/views.py:37
+#: task_manager/labels/views.py:38
 msgid "The label has been successfully updated"
 msgstr "Метка успешно изменена"
 
-#: task_manager/labels/views.py:54
+#: task_manager/labels/views.py:55
 msgid "The label has been successfully deleted"
 msgstr "Метка успешно удалена"
 
-#: task_manager/labels/views.py:68
+#: task_manager/labels/views.py:67
 msgid "Unable to delete the label because it is in use"
 msgstr "Невозможно удалить метку, потому что она используется"
 
-#: task_manager/statuses/views.py:47
+#: task_manager/statuses/views.py:51
 msgid "Status successfully created"
 msgstr "Статус успешно создан"
 
-#: task_manager/statuses/views.py:81
+#: task_manager/statuses/views.py:84
 msgid "Status successfully updated"
 msgstr "Статус успешно изменен"
 
-#: task_manager/statuses/views.py:97
+#: task_manager/statuses/views.py:100
 msgid "Status successfully deleted"
 msgstr "Статус успешно удален"
 
-#: task_manager/statuses/views.py:117
+#: task_manager/statuses/views.py:121
 msgid "Unable to delete the status because it is in use"
 msgstr "Невозможно удалить статус, потому что он используется"
 
-#: task_manager/tasks/views.py:39
+#: task_manager/tasks/views.py:43
 msgid "Task successfully created"
 msgstr "Задача успешно создана"
 
-#: task_manager/tasks/views.py:48
+#: task_manager/tasks/views.py:52
 msgid "Task successfully updated"
 msgstr "Задача успешно изменена"
 
-#: task_manager/tasks/views.py:62
+#: task_manager/tasks/views.py:66
 msgid "The task has been successfully deleted"
 msgstr "Задача успешно удалена"
 
-#: task_manager/tasks/views.py:74
+#: task_manager/tasks/views.py:80
 msgid "The task can only be deleted by its author"
 msgstr "Задачу может удалить только ее автор"
 
-#: task_manager/users/views.py:33
+#: task_manager/users/views.py:34
 msgid "The user has been successfully registered"
 msgstr "Пользователь успешно зарегистрирован"
 
-#: task_manager/users/views.py:51 task_manager/users/views.py:109
+#: task_manager/users/views.py:53 task_manager/users/views.py:119
 msgid "You do not have permission to modify another user."
 msgstr "У вас нет прав для изменения другого пользователя."
 
-#: task_manager/users/views.py:69
+#: task_manager/users/views.py:75
 msgid "The user has been successfully updated"
 msgstr "Пользователь успешно изменен"
 
-#: task_manager/users/views.py:84
+#: task_manager/users/views.py:93
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
-#: task_manager/users/views.py:94
+#: task_manager/users/views.py:103
 msgid "The user has been successfully deleted"
 msgstr "Пользователь успешно удален"
 
-#: task_manager/users/views.py:119
+#: task_manager/users/views.py:129
 msgid "Unable to delete the user because it is being used."
 msgstr "Невозможно удалить пользователя, потому что он используется"
+
+#: task_manager/users/views.py:139
+msgid "You have been logged out."
+msgstr "Вы разлогинены"
 
 #: templates/base.html:14
 msgid "Task manager"
@@ -114,7 +118,7 @@ msgstr "Задачи"
 msgid "Logout"
 msgstr "Выход"
 
-#: templates/base.html:49 templates/users/login.html:19
+#: templates/base.html:49
 msgid "Log in"
 msgstr "Вход"
 
@@ -164,7 +168,7 @@ msgstr "Создать метку"
 
 #: templates/labels/index.html:16 templates/statuses/index.html:16
 #: templates/tasks/create_task.html:20 templates/tasks/update_task.html:20
-#: templates/users/create_user.html:20
+#: templates/users/create_user.html:20 templates/users/update_user.html:20
 msgid "Name"
 msgstr "Имя"
 
@@ -200,7 +204,7 @@ msgstr "Статусы"
 
 #: templates/statuses/index.html:28 templates/statuses/update_status.html:22
 #: templates/tasks/task.html:46 templates/tasks/update_task.html:39
-#: templates/users/index.html:25 templates/users/update_user.html:22
+#: templates/users/index.html:25 templates/users/update_user.html:46
 msgid "Edit"
 msgstr "Изменить"
 
@@ -246,15 +250,16 @@ msgstr "Изменить задачу"
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/create_user.html:25
+#: templates/users/create_user.html:25 templates/users/update_user.html:25
 msgid "Surname"
 msgstr "Фамилия"
 
 #: templates/users/create_user.html:30 templates/users/index.html:11
+#: templates/users/update_user.html:30
 msgid "User name"
 msgstr "Имя пользователя"
 
-#: templates/users/create_user.html:32
+#: templates/users/create_user.html:32 templates/users/update_user.html:32
 msgid ""
 "This field is required and must be no more than 150 characters. Only "
 "letters, numbers, and the symbols @/./+/-/_ are allowed."
@@ -262,15 +267,15 @@ msgstr ""
 "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./"
 "+/-/_."
 
-#: templates/users/create_user.html:38
+#: templates/users/create_user.html:38 templates/users/update_user.html:38
 msgid "Your password must contain at least 3 characters."
 msgstr "Ваш пароль должен содержать как минимум 3 символа."
 
-#: templates/users/create_user.html:42
+#: templates/users/create_user.html:42 templates/users/update_user.html:42
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: templates/users/create_user.html:44
+#: templates/users/create_user.html:44 templates/users/update_user.html:44
 msgid "To confirm, please enter your password again."
 msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
 
@@ -286,7 +291,7 @@ msgstr "Удаление пользователя"
 msgid "Full name"
 msgstr "Полное имя"
 
-#: templates/users/login.html:5
+#: templates/users/login.html:5 templates/users/login.html:19
 msgid "Login"
 msgstr "Войти"
 
@@ -299,7 +304,6 @@ msgid "Password:"
 msgstr "Пароль"
 
 #: templates/users/update_user.html:5
-#| msgid "Edit"
 msgctxt "User edit"
 msgid "Edit"
 msgstr "Изменение пользователя"

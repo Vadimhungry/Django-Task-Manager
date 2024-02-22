@@ -5,6 +5,7 @@ from .views import (
     UserUpdateFormView,
     UserLoginView,
     UserDeleteFormView,
+    CustomLogout
 )
 from django.contrib.auth import views as auth_views
 
@@ -14,7 +15,7 @@ urlpatterns = [
     path("login/", UserLoginView.as_view(), name="user_login"),
     path(
         "logout/",
-        auth_views.LogoutView.as_view(next_page="index"),
+        CustomLogout.as_view(),
         name="logout"
     ),
     path("create/", UserCreateFormView.as_view(), name="user_create"),

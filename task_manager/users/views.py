@@ -11,6 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.db.models.deletion import ProtectedError
 from django.utils.translation import gettext as _
+from django.contrib.auth.views import LogoutView
 
 
 class IndexView(View):
@@ -128,3 +129,12 @@ class UserDeleteFormView(
                 _("Unable to delete the user because it is being used."),
             )
             return redirect("users_index")
+
+
+class CustomLogout(SuccessMessageMixin, LogoutView):
+    next_page = "index"
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        messages.info(self.request, _("You have been logged out."))
+        return response
