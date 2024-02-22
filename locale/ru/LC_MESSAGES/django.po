@@ -116,7 +116,7 @@ msgstr "Выход"
 
 #: templates/base.html:49 templates/users/login.html:19
 msgid "Log in"
-msgstr "Вход"
+msgstr "Войти"
 
 #: templates/base.html:53
 msgid "Sign Up"
