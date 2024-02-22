@@ -296,7 +296,7 @@ msgstr "Имя пользователя"
 
 #: templates/users/login.html:15
 msgid "Password:"
-msgstr "Пароль:"
+msgstr "Пароль"
 
 #: templates/users/update_user.html:5
 #| msgid "Edit"
