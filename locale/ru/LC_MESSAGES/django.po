@@ -292,7 +292,7 @@ msgstr "Вход"
 
 #: templates/users/login.html:10
 msgid "User name:"
-msgstr "Имя пользователя:"
+msgstr "Имя пользователя"
 
 #: templates/users/login.html:15
 msgid "Password:"
