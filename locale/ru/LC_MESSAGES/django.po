@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-22 16:18+0200\n"
+"POT-Creation-Date: 2024-02-22 17:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,10 +74,6 @@ msgstr "У вас нет прав для изменения другого по�
 msgid "The user has been successfully updated"
 msgstr "Пользователь успешно изменен"
 
-#: task_manager/users/views.py:93
-msgid "You are logged in"
-msgstr "Вы залогинены"
-
 #: task_manager/users/views.py:103
 msgid "The user has been successfully deleted"
 msgstr "Пользователь успешно удален"
@@ -89,6 +85,10 @@ msgstr "Невозможно удалить пользователя, потом
 #: task_manager/users/views.py:139
 msgid "You have been logged out."
 msgstr "Вы разлогинены"
+
+#: task_manager/views.py:25
+msgid "You are logged in"
+msgstr "Вы залогинены"
 
 #: templates/base.html:14
 msgid "Task manager"
@@ -292,7 +292,6 @@ msgid "Full name"
 msgstr "Полное имя"
 
 #: templates/users/login.html:5
-#| msgid "Login"
 msgctxt "Login page h1"
 msgid "Login"
 msgstr "Вход"

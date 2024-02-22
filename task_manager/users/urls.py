@@ -3,7 +3,6 @@ from .views import (
     IndexView,
     UserCreateFormView,
     UserUpdateFormView,
-    UserLoginView,
     UserDeleteFormView,
     CustomLogout
 )
@@ -12,7 +11,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", IndexView.as_view(), name="users_index"),
-    path("login/", UserLoginView.as_view(), name="user_login"),
+    # path("login/", UserLoginView.as_view(), name="user_login"),
     path(
         "logout/",
         CustomLogout.as_view(),

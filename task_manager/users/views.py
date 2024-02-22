@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm, CustomAuthForm
+from .forms import CustomUserCreationForm
 from django.views import View
 from .models import CustomUser
 from django.contrib.auth.views import LoginView
@@ -83,15 +83,15 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         )
 
 
-class UserLoginView(LoginView):
-    form_class = CustomAuthForm
-    template_name = "users/login.html"
-    next_page = "index"
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _("You are logged in"))
-        return response
+# class UserLoginView(LoginView):
+#     form_class = CustomAuthForm
+#     template_name = "users/login.html"
+#     next_page = "index"
+#
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         messages.success(self.request, _("You are logged in"))
+#         return response
 
 
 class UserDeleteFormView(
