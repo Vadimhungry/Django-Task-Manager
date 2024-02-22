@@ -99,7 +99,6 @@ msgid "Users"
 msgstr "Пользователи"
 
 #: templates/base.html:27
-#, fuzzy
 #| msgid "Statuses"
 msgid "Stasuses"
 msgstr "Статусы"
