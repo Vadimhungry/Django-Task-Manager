@@ -4,7 +4,7 @@ from .models import Task
 from ..users.models import CustomUser
 from ..statuses.models import Status
 from ..labels.models import Label
-from task_manager.tasks.filters import TaskFilter
+from ..tasks.filters import TaskFilter
 from django.test import RequestFactory
 
 
