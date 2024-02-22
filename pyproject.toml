@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "Django task-manager"
 authors = ["VadimK <yaralavadim@gmail.com>"]
 readme = "README.md"
+packages = [
+  { include = "hexlet-code" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
