@@ -17,7 +17,7 @@
         <form action="{% url 'status_create' %}" method="post">
             {% csrf_token %}
             <div class="mb-3">
-                <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
+                <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Name" %}</label>
                 {{ form.name }}
             </div>
             <input class="btn btn-primary" type="submit" value="{% translate "Create" %}">

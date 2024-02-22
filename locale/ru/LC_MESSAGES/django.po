@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-22 17:31+0200\n"
+"POT-Creation-Date: 2024-02-22 18:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,6 +29,14 @@ msgstr "Метка успешно удалена"
 #: task_manager/labels/views.py:67
 msgid "Unable to delete the label because it is in use"
 msgstr "Невозможно удалить метку, потому что она используется"
+
+#: task_manager/statuses/forms.py:6 task_manager/statuses/forms.py:11
+#: templates/labels/index.html:16 templates/statuses/create_status.html:20
+#: templates/statuses/index.html:16 templates/tasks/create_task.html:20
+#: templates/tasks/update_task.html:20 templates/users/create_user.html:20
+#: templates/users/update_user.html:20
+msgid "Name"
+msgstr "Имя"
 
 #: task_manager/statuses/views.py:51
 msgid "Status successfully created"
@@ -99,7 +107,6 @@ msgid "Users"
 msgstr "Пользователи"
 
 #: templates/base.html:27
-#| msgid "Statuses"
 msgid "Stasuses"
 msgstr "Статусы"
 
@@ -164,12 +171,6 @@ msgstr "Да, удалить"
 #: templates/labels/index.html:10
 msgid "Create label"
 msgstr "Создать метку"
-
-#: templates/labels/index.html:16 templates/statuses/index.html:16
-#: templates/tasks/create_task.html:20 templates/tasks/update_task.html:20
-#: templates/users/create_user.html:20 templates/users/update_user.html:20
-msgid "Name"
-msgstr "Имя"
 
 #: templates/labels/index.html:17 templates/statuses/index.html:17
 #: templates/tasks/task.html:30 templates/users/index.html:13
