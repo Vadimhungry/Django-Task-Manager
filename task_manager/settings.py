@@ -61,10 +61,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-    "hexlet-code.users",
-    "hexlet-code.statuses",
-    "hexlet-code.tasks",
-    "hexlet-code.labels",
+    "task_manager.users",
+    "task_manager.statuses",
+    "task_manager.tasks",
+    "task_manager.labels",
     "crispy_forms",
     "django_filters",
 ]
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
-ROOT_URLCONF = "hexlet-code.urls"
+ROOT_URLCONF = "task_manager.urls"
 
 TEMPLATES = [
     {
