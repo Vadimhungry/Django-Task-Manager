@@ -5,7 +5,7 @@ description = "Django task-manager"
 authors = ["VadimK <yaralavadim@gmail.com>"]
 readme = "README.md"
 packages = [
-  { include = "hexlet-code" },
+  { include = "task_manager" },
 ]
 
 [tool.poetry.dependencies]
