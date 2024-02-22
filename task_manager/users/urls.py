@@ -14,7 +14,7 @@ urlpatterns = [
     path("login/", UserLoginView.as_view(), name="user_login"),
     path(
         "logout/",
-        auth_views.LogoutView.as_view(next_page="users_index"),
+        auth_views.LogoutView.as_view(next_page="index"),
         name="logout"
     ),
     path("create/", UserCreateFormView.as_view(), name="user_create"),
