@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-22 15:57+0200\n"
+"POT-Creation-Date: 2024-02-22 16:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -291,9 +291,11 @@ msgstr "Удаление пользователя"
 msgid "Full name"
 msgstr "Полное имя"
 
-#: templates/users/login.html:5 templates/users/login.html:19
+#: templates/users/login.html:5
+#| msgid "Login"
+msgctxt "Login page h1"
 msgid "Login"
-msgstr "Войти"
+msgstr "Вход"
 
 #: templates/users/login.html:10
 msgid "User name:"
@@ -302,6 +304,10 @@ msgstr "Имя пользователя"
 #: templates/users/login.html:15
 msgid "Password:"
 msgstr "Пароль"
+
+#: templates/users/login.html:19
+msgid "Login"
+msgstr "Войти"
 
 #: templates/users/update_user.html:5
 msgctxt "User edit"

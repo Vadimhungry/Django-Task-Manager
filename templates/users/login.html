@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block content %}
 
-    <h1 class="my-4">{% translate "Login" %}</h1>
+    <h1 class="my-4">{% translate "Login" context "Login page h1"%}</h1>
     <form method="post">
         {% csrf_token %}
 
