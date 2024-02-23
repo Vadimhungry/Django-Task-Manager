@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-22 18:34+0200\n"
+"POT-Creation-Date: 2024-02-23 12:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,12 +30,12 @@ msgstr "Метка успешно удалена"
 msgid "Unable to delete the label because it is in use"
 msgstr "Невозможно удалить метку, потому что она используется"
 
-#: task_manager/statuses/forms.py:11 templates/labels/create_label.html:20
-#: templates/labels/index.html:16 templates/labels/update_label.html:20
+#: task_manager/statuses/forms.py:11 task_manager/tasks/forms.py:9
+#: templates/labels/create_label.html:20 templates/labels/index.html:16
+#: templates/labels/update_label.html:20
 #: templates/statuses/create_status.html:20 templates/statuses/index.html:16
-#: templates/statuses/update_status.html:20 templates/tasks/create_task.html:20
-#: templates/tasks/update_task.html:20 templates/users/create_user.html:20
-#: templates/users/update_user.html:20
+#: templates/statuses/update_status.html:20 templates/tasks/update_task.html:20
+#: templates/users/create_user.html:20 templates/users/update_user.html:20
 msgid "Name"
 msgstr "Имя"
 
@@ -54,6 +54,34 @@ msgstr "Статус успешно удален"
 #: task_manager/statuses/views.py:121
 msgid "Unable to delete the status because it is in use"
 msgstr "Невозможно удалить статус, потому что он используется"
+
+#: task_manager/tasks/forms.py:11
+msgid "Имя"
+msgstr ""
+
+#: task_manager/tasks/forms.py:12 templates/tasks/update_task.html:24
+msgid "Description"
+msgstr "Описание"
+
+#: task_manager/tasks/forms.py:14
+msgid "Описание"
+msgstr ""
+
+#: task_manager/tasks/forms.py:15 templates/tasks/task.html:26
+#: templates/tasks/update_task.html:28
+msgid "Status"
+msgstr "Статус"
+
+#: task_manager/tasks/forms.py:17 templates/tasks/task.html:22
+#: templates/tasks/update_task.html:32
+msgid "Executor"
+msgstr "Исполнитель"
+
+#: task_manager/tasks/forms.py:19 templates/base.html:31
+#: templates/labels/index.html:8 templates/tasks/task.html:35
+#: templates/tasks/update_task.html:36
+msgid "Labels"
+msgstr "Метки"
 
 #: task_manager/tasks/views.py:43
 msgid "Task successfully created"
@@ -111,12 +139,6 @@ msgstr "Пользователи"
 msgid "Stasuses"
 msgstr "Статусы"
 
-#: templates/base.html:31 templates/labels/index.html:8
-#: templates/tasks/create_task.html:36 templates/tasks/task.html:35
-#: templates/tasks/update_task.html:36
-msgid "Labels"
-msgstr "Метки"
-
 #: templates/base.html:35
 msgid "Tasks"
 msgstr "Задачи"
@@ -151,7 +173,7 @@ msgid "Create a label"
 msgstr "Создать метку"
 
 #: templates/labels/create_label.html:23
-#: templates/statuses/create_status.html:23 templates/tasks/create_task.html:39
+#: templates/statuses/create_status.html:23 templates/tasks/create_task.html:42
 msgid "Create"
 msgstr "Создать"
 
@@ -213,23 +235,9 @@ msgstr "Изменить"
 msgid "Edit status"
 msgstr "Изменить статус"
 
-#: templates/tasks/create_task.html:5
+#: templates/tasks/create_task.html:7
 msgid "Create task"
 msgstr "Создать задачу"
-
-#: templates/tasks/create_task.html:24 templates/tasks/update_task.html:24
-msgid "Description"
-msgstr "Описание"
-
-#: templates/tasks/create_task.html:28 templates/tasks/task.html:26
-#: templates/tasks/update_task.html:28
-msgid "Status"
-msgstr "Статус"
-
-#: templates/tasks/create_task.html:32 templates/tasks/task.html:22
-#: templates/tasks/update_task.html:32
-msgid "Executor"
-msgstr "Исполнитель"
 
 #: templates/tasks/delete_task.html:5
 msgid "Delete task"

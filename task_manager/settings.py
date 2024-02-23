@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "task_manager.labels",
     "crispy_forms",
     "django_filters",
+    "django_bootstrap5",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
