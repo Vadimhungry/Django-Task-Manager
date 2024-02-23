@@ -18,28 +18,9 @@
 
         <form action="{% url 'task_create' %}" method="post">
             {% csrf_token %}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Name" %}</label>#}
-{#                {{ form.name }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ form.description.id_for_label }}">{% translate "Description" %}</label>#}
-{#                {{ form.description }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ form.status.id_for_label }}">{% translate "Status" %}</label>#}
-{#                {{ form.status }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label for="{{ form.executor.id_for_label }}" class="form-label">{% translate "Executor" %}</label>#}
-{#                {{ form.executor }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="id_labels">{% translate "Labels" %}</label>#}
-{#                {{ form.labels }}#}
-{#            </div>#}
             {% bootstrap_form form %}
-            <input class="btn btn-primary" type="submit" value="{% translate "Create" %}">
+            {% translate 'Create' as button_name %}
+            {% bootstrap_button button_type="submit" button_class="btn btn-secondary" content=button_name %}
         </form>
     </div>
 {% endblock %}
