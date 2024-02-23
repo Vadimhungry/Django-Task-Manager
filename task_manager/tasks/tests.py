@@ -84,15 +84,10 @@ class TaskViewTests(TestCase):
 
 class TaskFilterTestCase(TestCase):
     def setUp(self):
-
         self.user = CustomUser.objects.create_user(
-            username="testuser",
-            password="12345"
+            username="testuser", password="12345"
         )
-        self.client.login(
-            username="testuser",
-            password="12345"
-        )
+        self.client.login(username="testuser", password="12345")
 
         # Создаем статус и метку для использования в тесте
         self.status = Status.objects.create(name="Test Status")
@@ -120,9 +115,7 @@ class TaskFilterTestCase(TestCase):
         # Test for regular user
         request = RequestFactory().get("/")
         request.user = CustomUser.objects.create_user(
-            username="regular_user",
-            email="user@example.com",
-            password="password"
+            username="regular_user", email="user@example.com", password="password"
         )
         filter = TaskFilter(
             {"created_by_current_user": "on"},

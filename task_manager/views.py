@@ -15,6 +15,7 @@ def index(request):
         },
     )
 
+
 class UserLoginView(LoginView):
     form_class = CustomAuthForm
     template_name = "users/login.html"

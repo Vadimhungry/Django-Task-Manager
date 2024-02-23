@@ -1,4 +1,4 @@
-from django.shortcuts import (render, get_object_or_404)
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import Task
 from .forms import TaskCreateForm
@@ -27,9 +27,7 @@ class IndexView(LoginRequiredMixin, View):
             tasks = filter.qs
 
         return render(
-            request,
-            "tasks/index.html",
-            context={"filter": filter, "tasks": tasks}
+            request, "tasks/index.html", context={"filter": filter, "tasks": tasks}
         )
 
 
@@ -75,10 +73,7 @@ class TaskDelete(
         return get_object_or_404(Task, id=task_id)
 
     def handle_no_permission(self):
-        messages.warning(
-            self.request,
-            _("The task can only be deleted by its author")
-        )
+        messages.warning(self.request, _("The task can only be deleted by its author"))
         return HttpResponseRedirect(reverse("tasks_index"))
 
 

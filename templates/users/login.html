@@ -1,22 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load django_bootstrap5 %}
 {% block content %}
 
     <h1 class="my-4">{% translate "Login" context "Login page h1"%}</h1>
     <form method="post">
         {% csrf_token %}
-
-        <div>
-            <label for="{{ form.username.id_for_label }}">{% translate "User name:" %}</label>
-            {{ form.username }}
-        </div>
-
-        <div>
-            <label for="{{ form.password.id_for_label }}">{% translate "Password:" %}</label>
-            {{ form.password }}
-        </div>
-
-        <input type="submit" class="btn btn-primary" value="{% translate "Login" %}">
-
+        {% bootstrap_form form %}
+        {% translate 'Login' as button_name %}
+        {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
     </form>
 {% endblock %}

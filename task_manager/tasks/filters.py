@@ -30,9 +30,7 @@ class TaskFilter(django_filters.FilterSet):
         field_name="author",
         method="filter_created_by_current_user",
         label="Только свои задачи",
-        widget=forms.CheckboxInput(
-            attrs={"class": "form-check-input is-valid"}
-        ),
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input is-valid"}),
     )
 
     class Meta:

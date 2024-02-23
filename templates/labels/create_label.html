@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load django_bootstrap5 %}
 {% block content %}
     <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate "Create a label" %}</h1>
@@ -16,11 +17,9 @@
 
         <form action="{% url 'label_create' %}" method="post">
             {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Name" %}</label>
-                {{ form.name }}
-            </div>
-            <input class="btn btn-primary" type="submit" value="{% translate "Create" %}">
+            {% bootstrap_form form %}
+            {% translate 'Create' as button_name %}
+            {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
         </form>
     </div>
 {% endblock %}

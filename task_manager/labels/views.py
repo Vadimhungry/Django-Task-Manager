@@ -58,7 +58,6 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         label_id = self.kwargs.get("label_id")
         return get_object_or_404(Label, id=label_id)
 
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         connected_task_exist = self.object.task_set.exists()

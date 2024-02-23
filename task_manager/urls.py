@@ -22,7 +22,10 @@ from .views import UserLoginView
 urlpatterns = [
     path("", views.index, name="index"),
     path("login/", UserLoginView.as_view(), name="user_login"),
-    path("users/", include("task_manager.users.urls"), ),
+    path(
+        "users/",
+        include("task_manager.users.urls"),
+    ),
     path("statuses/", include("task_manager.statuses.urls")),
     path("tasks/", include("task_manager.tasks.urls")),
     path("labels/", include("task_manager.labels.urls")),
