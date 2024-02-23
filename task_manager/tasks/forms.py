@@ -15,7 +15,6 @@ class TaskCreateForm(ModelForm):
         self.fields["description"].label = _("Description")
         self.fields["description"].widget.attrs["class"] = "form-control"
         self.fields["description"].widget.attrs["placeholder"] = _("Описание")
-
         self.fields["status"].label = _("Status")
         self.fields["status"].widget.attrs["class"] = "form-select"
 
