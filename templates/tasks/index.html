@@ -55,8 +55,8 @@
                 <td>{{ task.id }}</td>
                 <td><a href="/tasks/{{ task.id }}/">{{ task.name }}</a></td>
                 <td>{{ task.status }}</td>
-                <td>{{ task.author.username }}</td>
-                <td>{{ task.executor.username }}</td>
+                <td>{{ task.author }}</td>
+                <td>{{ task.executor }}</td>
                 <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
                     <a href="{% url 'task_update' task_id=task.id %}">Изменить</a>
