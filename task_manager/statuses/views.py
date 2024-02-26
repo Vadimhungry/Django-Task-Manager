@@ -23,7 +23,11 @@ class IndexView(UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()[:15]
-        return render(request, "statuses/index.html", context={"statuses": statuses})
+        return render(
+            request,
+            "statuses/index.html",
+            context={"statuses": statuses}
+        )
 
 
 class StatusCreateFormView(UserPassesTestMixin, View):
@@ -113,6 +117,7 @@ class StatusDeleteFormView(
             return super().post(request, *args, **kwargs)
         except ProtectedError:
             messages.warning(
-                self.request, _("Unable to delete the status because it is in use")
+                self.request,
+                _("Unable to delete the status because it is in use")
             )
             return redirect("statuses_index")

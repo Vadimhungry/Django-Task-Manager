@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import (
     UserCreationForm,
     UserChangeForm,
-    AuthenticationForm,
 )
 from .models import CustomUser
 
@@ -10,7 +9,13 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ("first_name", "last_name", "username", "password1", "password2")
+        fields = (
+            "first_name",
+            "last_name",
+            "username",
+            "password1",
+            "password2"
+        )
         widgets = {
             "first_name": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Имя"}
@@ -19,7 +24,10 @@ class CustomUserCreationForm(UserCreationForm):
                 attrs={"class": "form-control", "placeholder": "Фамилия"}
             ),
             "username": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Имя пользователя"}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Имя пользователя"
+                }
             ),
         }
 

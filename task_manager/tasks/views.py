@@ -22,20 +22,6 @@ class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     filterset_class = TaskFilter
     template_name = "tasks/index.html"
 
-    # def get(self, request, *args, **kwargs):
-    #     tasks = Task.objects.all()
-    #
-    #     # Инициализация фильтра с исходным queryset и передача request
-    #     filter = TaskFilter(request.GET, queryset=tasks, request=request)
-    #
-    #     # Применение фильтра, если он был отправлен
-    #     if "apply_filter" in request.GET:
-    #         tasks = filter.qs
-    #
-    #     return render(
-    #         request, "tasks/index.html", context={"filter": filter, "tasks": tasks}
-    #     )
-
 
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
@@ -79,7 +65,10 @@ class TaskDelete(
         return get_object_or_404(Task, id=task_id)
 
     def handle_no_permission(self):
-        messages.warning(self.request, _("The task can only be deleted by its author"))
+        messages.warning(
+            self.request,
+            _("The task can only be deleted by its author")
+        )
         return HttpResponseRedirect(reverse("tasks_index"))
 
 

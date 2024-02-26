@@ -6,7 +6,6 @@ from django.utils.translation import gettext as _
 
 
 class TaskFilter(django_filters.FilterSet):
-
     labels = django_filters.ModelChoiceFilter(
         field_name="labels",
         queryset=Label.objects.all(),

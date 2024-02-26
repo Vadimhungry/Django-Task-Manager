@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm
 from django.views import View
 from .models import CustomUser
-from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -49,7 +48,8 @@ class UserUpdateFormView(UserPassesTestMixin, View):
 
     def handle_no_permission(self):
         messages.warning(
-            self.request, _("You do not have permission to modify another user.")
+            self.request,
+            _("You do not have permission to modify another user.")
         )
         return redirect("users_index")
 
@@ -58,7 +58,9 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         user = get_object_or_404(CustomUser, id=user_id)
         form = CustomUserCreationForm(instance=user)
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
 
     def post(self, request, *args, **kwargs):
@@ -67,23 +69,17 @@ class UserUpdateFormView(UserPassesTestMixin, View):
         form = CustomUserCreationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(self.request, _("The user has been successfully updated"))
+            messages.success(
+                self.request,
+                _("The user has been successfully updated")
+            )
             return redirect("users_index")
 
         return render(
-            request, "users/update_user.html", {"form": form, "user_id": user_id}
+            request,
+            "users/update_user.html",
+            {"form": form, "user_id": user_id}
         )
-
-
-# class UserLoginView(LoginView):
-#     form_class = CustomAuthForm
-#     template_name = "users/login.html"
-#     next_page = "index"
-#
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         messages.success(self.request, _("You are logged in"))
-#         return response
 
 
 class UserDeleteFormView(
@@ -107,7 +103,8 @@ class UserDeleteFormView(
 
     def handle_no_permission(self):
         messages.warning(
-            self.request, _("You do not have permission to modify another user.")
+            self.request,
+            _("You do not have permission to modify another user.")
         )
         return redirect("users_index")
 

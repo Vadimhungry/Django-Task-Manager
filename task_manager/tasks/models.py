@@ -14,7 +14,7 @@ class Task(models.Model):
         related_name="authored_tasks",
         blank=True,
         verbose_name=_("Executor"),
-        null=True
+        null=True,
     )
     author = models.ForeignKey(
         CustomUser,
@@ -29,10 +29,7 @@ class Task(models.Model):
         auto_now_add=True, verbose_name=_("Creation date")
     )
     labels = models.ManyToManyField(
-        Label,
-        blank=True,
-        verbose_name=_("Labels"),
-        null=True
+        Label, blank=True, verbose_name=_("Labels"), null=True
     )
 
     def __str__(self):

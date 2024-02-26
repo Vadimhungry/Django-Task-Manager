@@ -6,7 +6,6 @@ from .views import (
     UserDeleteFormView,
     CustomLogout,
 )
-from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -14,6 +13,14 @@ urlpatterns = [
     # path("login/", UserLoginView.as_view(), name="user_login"),
     path("logout/", CustomLogout.as_view(), name="logout"),
     path("create/", UserCreateFormView.as_view(), name="user_create"),
-    path("<int:user_id>/update/", UserUpdateFormView.as_view(), name="user_update"),
-    path("<int:user_id>/delete/", UserDeleteFormView.as_view(), name="delete_user"),
+    path(
+        "<int:user_id>/update/",
+        UserUpdateFormView.as_view(),
+        name="user_update"
+    ),
+    path(
+        "<int:user_id>/delete/",
+        UserDeleteFormView.as_view(),
+        name="delete_user"
+    ),
 ]

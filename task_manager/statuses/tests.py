@@ -52,5 +52,9 @@ class TestStatuses(TestCase):
         }
         status_id = Status.objects.get(name="fun status").id
         update_url = reverse("status_update", kwargs={"status_id": status_id})
-        response = self.client.post(update_url, data=new_form_data, follow=True)
+        response = self.client.post(
+            update_url,
+            data=new_form_data,
+            follow=True
+        )
         self.assertContains(response, "Updated Status")

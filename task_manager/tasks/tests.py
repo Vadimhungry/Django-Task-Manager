@@ -115,7 +115,9 @@ class TaskFilterTestCase(TestCase):
         # Test for regular user
         request = RequestFactory().get("/")
         request.user = CustomUser.objects.create_user(
-            username="regular_user", email="user@example.com", password="password"
+            username="regular_user",
+            email="user@example.com",
+            password="password"
         )
         filter = TaskFilter(
             {"created_by_current_user": "on"},
