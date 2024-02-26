@@ -1,5 +1,4 @@
 import django_filters
-
 from django import forms
 from .models import Task
 from ..statuses.models import Status
@@ -26,7 +25,7 @@ class TaskFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={"class": "form-select is-valid"}),
         label="Метки",
     )
-    created_by_current_user = django_filters.BooleanFilter(
+    self_tasks = django_filters.BooleanFilter(
         field_name="author",
         method="filter_created_by_current_user",
         label="Только свои задачи",
@@ -35,7 +34,7 @@ class TaskFilter(django_filters.FilterSet):
 
     class Meta:
         model = Task
-        fields = ["status", "executor", "labels", "created_by_current_user"]
+        fields = ["status", "executor", "labels", "self_tasks"]
 
     def filter_created_by_current_user(self, queryset, name, value):
         if value:
