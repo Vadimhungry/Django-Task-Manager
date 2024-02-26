@@ -53,7 +53,7 @@
         {% for task in tasks %}
             <tr>
                 <td>{{ task.id }}</td>
-                <td><a href="/tasks/{{ task.id }}/">{{ task.name }}</a></td>
+                <td><a href="/tasks/{{ task.id }}/">{{ task }}</a></td>
                 <td>{{ task.status }}</td>
                 <td>{{ task.author }}</td>
                 <td>{{ task.executor }}</td>
