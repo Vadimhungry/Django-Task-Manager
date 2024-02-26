@@ -1,9 +1,8 @@
 import django_filters
 from django import forms
 from .models import Task
-from ..statuses.models import Status
-from ..users.models import CustomUser
 from ..labels.models import Label
+from django.utils.translation import gettext as _
 
 
 class TaskFilter(django_filters.FilterSet):
@@ -12,12 +11,12 @@ class TaskFilter(django_filters.FilterSet):
         field_name="labels",
         queryset=Label.objects.all(),
         widget=forms.Select(attrs={"class": "form-select"}),
-        label="Метки",
+        label=_("Label"),
     )
     self_tasks = django_filters.BooleanFilter(
         field_name="author",
         method="filter_created_by_current_user",
-        label="Только свои задачи",
+        label=_("Self created tasks only"),
         widget=forms.CheckboxInput,
     )
 

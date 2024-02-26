@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-26 16:26+0200\n"
+"POT-Creation-Date: 2024-02-26 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,6 +52,14 @@ msgstr "Статус успешно удален"
 msgid "Unable to delete the status because it is in use"
 msgstr "Невозможно удалить статус, потому что он используется"
 
+#: task_manager/tasks/filters.py:14
+msgid "Label"
+msgstr "Метка"
+
+#: task_manager/tasks/filters.py:19
+msgid "Self created tasks only"
+msgstr "Только свои задачи"
+
 #: task_manager/tasks/models.py:10
 msgid "Description"
 msgstr "Описание"
@@ -82,19 +90,19 @@ msgstr "Дата создания"
 msgid "Labels"
 msgstr "Метки"
 
-#: task_manager/tasks/views.py:48
+#: task_manager/tasks/views.py:47
 msgid "Task successfully created"
 msgstr "Задача успешно создана"
 
-#: task_manager/tasks/views.py:57
+#: task_manager/tasks/views.py:56
 msgid "Task successfully updated"
 msgstr "Задача успешно изменена"
 
-#: task_manager/tasks/views.py:71
+#: task_manager/tasks/views.py:70
 msgid "The task has been successfully deleted"
 msgstr "Задача успешно удалена"
 
-#: task_manager/tasks/views.py:83
+#: task_manager/tasks/views.py:82
 msgid "The task can only be deleted by its author"
 msgstr "Задачу может удалить только ее автор"
 

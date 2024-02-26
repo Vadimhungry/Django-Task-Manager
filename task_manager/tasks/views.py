@@ -10,7 +10,6 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .filters import TaskFilter
-from django.utils.translation import gettext as _
 from django.views.generic.base import ContextMixin
 from django_filters.views import FilterView
 from django.utils.translation import gettext as _
