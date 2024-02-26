@@ -41,11 +41,11 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Имя</th>
-            <th>Статус</th>
-            <th>Автор</th>
-            <th>Исполнитель</th>
-            <th>Дата создания</th>
+            <th>{% translate 'Name' %}</th>
+            <th>{% translate 'Status' %}</th>
+            <th>{% translate 'Author' %}</th>
+            <th>{% translate 'Executor' %}</th>
+            <th>{% translate 'Creation date' %}</th>
             <th></th>
         </tr>
         </thead>
@@ -53,7 +53,7 @@
         {% for task in tasks %}
             <tr>
                 <td>{{ task.id }}</td>
-                <td><a href="/tasks/{{ task.id }}/">{{ task }}</a></td>
+                <td><a class="text-body-emphasis fw-bold" href="{% url 'task' task_id=task.id %}">{{ task }}</a></td>
                 <td>{{ task.status }}</td>
                 <td>{{ task.author }}</td>
                 <td>{{ task.executor }}</td>
@@ -67,9 +67,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-
-
-
-
 {% endblock %}
