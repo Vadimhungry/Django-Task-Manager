@@ -54,9 +54,17 @@
             <tr>
                 <td>{{ task.id }}</td>
                 <td><a class="text-body-emphasis fw-bold" href="{% url 'task' task_id=task.id %}">{{ task }}</a></td>
-                <td>{{ task.status }}</td>
+                <td>
+                    {% if task.status %}
+                        {{ task.status }}
+                    {% endif %}
+                </td>
                 <td>{{ task.author }}</td>
-                <td>{{ task.executor }}</td>
+                <td>
+                    {% if task.executor %}
+                        {{ task.executor }}
+                    {% endif %}
+                </td>
                 <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
                     <a href="{% url 'task_update' task_id=task.id %}">Изменить</a>

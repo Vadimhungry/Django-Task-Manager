@@ -12,7 +12,9 @@ class Task(models.Model):
         CustomUser,
         on_delete=models.PROTECT,
         related_name="authored_tasks",
+        blank=True,
         verbose_name=_("Executor"),
+        null=True
     )
     author = models.ForeignKey(
         CustomUser,
@@ -26,7 +28,12 @@ class Task(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name=_("Creation date")
     )
-    labels = models.ManyToManyField(Label, verbose_name=_("Labels"))
+    labels = models.ManyToManyField(
+        Label,
+        blank=True,
+        verbose_name=_("Labels"),
+        null=True
+    )
 
     def __str__(self):
         return self.name

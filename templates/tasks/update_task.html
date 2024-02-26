@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load django_bootstrap5 %}
 {% block content %}
     <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate "Edit task" %}</h1>
@@ -16,27 +17,9 @@
 
         <form action="{% url 'task_update' task_id=task.id %}" method="post">
             {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Name" %}</label>
-                {{ form.name }}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{ form.description.id_for_label }}">{% translate "Description" %}</label>
-                {{ form.description }}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{ form.status.id_for_label }}">{% translate "Status" %}</label>
-                {{ form.status }}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{ form.executor.id_for_label }}">{% translate "Executor" %}</label>
-                {{ form.executor }}
-            </div>
-              <div class="mb-3">
-                <label class="form-label" for="id_labels">{% translate "Labels" %}</label>
-                {{ form.labels }}
-            </div>
-            <input class="btn btn-primary" type="submit" value="{% translate "Edit" %}">
+            {% bootstrap_form form %}
+            {% translate 'Edit' as button_name %}
+            {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
         </form>
     </div>
 {% endblock %}
