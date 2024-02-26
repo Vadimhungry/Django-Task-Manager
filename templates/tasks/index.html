@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
 {% load i18n %}
-
+{% load django_bootstrap5 %}
 {% block content %}
 
     <h1 class="my-4">Задачи</h1>
@@ -10,27 +9,30 @@
 <div class="card mb-3">
     <div class="card-body bg-light">
         <form class="form-inline center" method="get">
-            <div class="mb-3">
-                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Статус</label>
-                {{ filter.form.status }}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Исполнитель</label>
-                {{ filter.form.executor }}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Метки</label>
-                {{ filter.form.labels }}
-            </div>
-            <div class="mb-3">
-                <div class="form-check">
-                     {{ filter.form.self_tasks }}
-                <label class="form-check-label" for="{{ filter.form.status.id_for_label }}">Только свои задачи</label>
-                </div>
-
-
-            </div>
-            <button name="apply_filter" class="btn btn-primary" type="submit">Показать</button>
+{#            <div class="mb-3">#}
+{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Статус</label>#}
+{#                {{ filter.form.status }}#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Исполнитель</label>#}
+{#                {{ filter.form.executor }}#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Метки</label>#}
+{#                {{ filter.form.labels }}#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#                <div class="form-check">#}
+{#                     {{ filter.form.self_tasks }}#}
+{#                <label class="form-check-label" for="{{ filter.form.status.id_for_label }}">Только свои задачи</label>#}
+{#                </div>#}
+{##}
+{##}
+{#            </div>#}
+{#            <button name="apply_filter" class="btn btn-primary" type="submit">Показать</button>#}
+            {% bootstrap_form filter.form %}
+            {% translate 'Show' as button_name %}
+            {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
         </form>
     </div>
 </div>
@@ -50,7 +52,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for task in tasks %}
+        {% for task in object_list %}
             <tr>
                 <td>{{ task.id }}</td>
                 <td><a class="text-body-emphasis fw-bold" href="{% url 'task' task_id=task.id %}">{{ task }}</a></td>

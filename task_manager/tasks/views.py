@@ -11,24 +11,31 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .filters import TaskFilter
 from django.utils.translation import gettext as _
+from django.views.generic.base import ContextMixin
+from django_filters.views import FilterView
+from django.utils.translation import gettext as _
 
 
-class IndexView(LoginRequiredMixin, View):
+class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     login_url = "user_login"
+    model = Task
+    form_class = TaskCreateForm
+    filterset_class = TaskFilter
+    template_name = "tasks/index.html"
 
-    def get(self, request, *args, **kwargs):
-        tasks = Task.objects.all()
-
-        # Инициализация фильтра с исходным queryset и передача request
-        filter = TaskFilter(request.GET, queryset=tasks, request=request)
-
-        # Применение фильтра, если он был отправлен
-        if "apply_filter" in request.GET:
-            tasks = filter.qs
-
-        return render(
-            request, "tasks/index.html", context={"filter": filter, "tasks": tasks}
-        )
+    # def get(self, request, *args, **kwargs):
+    #     tasks = Task.objects.all()
+    #
+    #     # Инициализация фильтра с исходным queryset и передача request
+    #     filter = TaskFilter(request.GET, queryset=tasks, request=request)
+    #
+    #     # Применение фильтра, если он был отправлен
+    #     if "apply_filter" in request.GET:
+    #         tasks = filter.qs
+    #
+    #     return render(
+    #         request, "tasks/index.html", context={"filter": filter, "tasks": tasks}
+    #     )
 
 
 class TaskCreate(LoginRequiredMixin, CreateView):
