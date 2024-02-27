@@ -1,0 +1,29 @@
+name: tests-check
+
+on:
+  push:
+
+env:
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: python -m pip install poetry
+      - run: poetry install
+      - run: make lint
+      - run: make test
+
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v3.2.0
+        if: github.ref_name == 'main'
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true
