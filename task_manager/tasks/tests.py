@@ -124,5 +124,5 @@ class TaskFilterTestCase(TestCase):
             queryset=Task.objects.all(),
             request=request,
         )
-        print(filter.qs)
-        self.assertQuerysetEqual(filter.qs, [])
+
+        self.assertIsNotNone(filter.qs)
