@@ -170,7 +170,7 @@ SECURE_BROWSER_XSS_FILTER = True
 SHELL_PLUS_PRINT_SQL = True
 
 ROLLBAR = {
-    "access_token": "8421babc1eec4dc99b768c4831b94c0f",
+    "access_token": os.getenv("ROLLBAR"),
     "environment": "development" if DEBUG else "production",
     "code_version": "1.0",
     "root": BASE_DIR,
