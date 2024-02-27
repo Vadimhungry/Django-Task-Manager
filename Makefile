@@ -18,4 +18,4 @@ migrations:
 	@$(MANAGE) migrate
 
 lint:
-	poetry run flake8 task_manager
+	poetry run flake8 --exclude=migrations,settings.py task_manager
