@@ -16,3 +16,6 @@ test:
 migrations:
 	@$(MANAGE) makemigrations
 	@$(MANAGE) migrate
+
+lint:
+	poetry run flake8 task_manager
