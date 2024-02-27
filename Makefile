@@ -21,4 +21,5 @@ lint:
 	poetry run flake8 --exclude=migrations,settings.py task_manager
 
 test-coverage:
-	coverage run manage.py test
+	poetry run coverage run --source="task_manager" manage.py test task_manager
+	poetry run coverage xml
