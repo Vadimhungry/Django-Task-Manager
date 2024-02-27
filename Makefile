@@ -19,3 +19,6 @@ migrations:
 
 lint:
 	poetry run flake8 --exclude=migrations,settings.py task_manager
+
+test-coverage:
+	coverage run manage.py test
