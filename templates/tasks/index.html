@@ -3,42 +3,18 @@
 {% load django_bootstrap5 %}
 {% block content %}
 
-    <h1 class="my-4">Задачи</h1>
+    <h1 class="my-4">{% translate "Tasks" %}</h1>
 
-    <a class="btn btn-primary mb-3" href="{% url 'task_create' %}">Создать задачу</a>
+    <a class="btn btn-primary mb-3" href="{% url 'task_create' %}">{% translate "Create task" %}</a>
 <div class="card mb-3">
     <div class="card-body bg-light">
         <form class="form-inline center" method="get">
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Статус</label>#}
-{#                {{ filter.form.status }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Исполнитель</label>#}
-{#                {{ filter.form.executor }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <label class="form-label" for="{{ filter.form.status.id_for_label }}">Метки</label>#}
-{#                {{ filter.form.labels }}#}
-{#            </div>#}
-{#            <div class="mb-3">#}
-{#                <div class="form-check">#}
-{#                     {{ filter.form.self_tasks }}#}
-{#                <label class="form-check-label" for="{{ filter.form.status.id_for_label }}">Только свои задачи</label>#}
-{#                </div>#}
-{##}
-{##}
-{#            </div>#}
-{#            <button name="apply_filter" class="btn btn-primary" type="submit">Показать</button>#}
             {% bootstrap_form filter.form %}
             {% translate 'Show' as button_name %}
             {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
         </form>
     </div>
 </div>
-
-
-
     <table class="table table-striped">
         <thead>
         <tr>
@@ -69,9 +45,9 @@
                 </td>
                 <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="{% url 'task_update' task_id=task.id %}">Изменить</a>
+                    <a href="{% url 'task_update' task_id=task.id %}">{% translate 'Edit' %}</a>
                     <br>
-                    <a href="{% url 'task_delete' task_id=task.id %}">Удалить</a>
+                    <a href="{% url 'task_delete' task_id=task.id %}">{% translate 'Delete' %}</a>
                 </td>
             </tr>
         {% endfor %}

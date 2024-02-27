@@ -4,6 +4,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
 )
 from .models import CustomUser
+from django.utils.translation import gettext as _
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -18,15 +19,15 @@ class CustomUserCreationForm(UserCreationForm):
         )
         widgets = {
             "first_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Имя"}
+                attrs={"class": "form-control", "placeholder": _("Name")}
             ),
             "last_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Фамилия"}
+                attrs={"class": "form-control", "placeholder": _("Surname")}
             ),
             "username": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Имя пользователя"
+                    "placeholder": _("Username")
                 }
             ),
         }
