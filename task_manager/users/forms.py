@@ -25,10 +25,7 @@ class CustomUserCreationForm(UserCreationForm):
                 attrs={"class": "form-control", "placeholder": _("Surname")}
             ),
             "username": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": _("Username")
-                }
+                attrs={"class": "form-control", "placeholder": _("Username")}
             ),
         }
 

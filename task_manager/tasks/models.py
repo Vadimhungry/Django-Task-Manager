@@ -29,7 +29,9 @@ class Task(models.Model):
         auto_now_add=True, verbose_name=_("Creation date")
     )
     labels = models.ManyToManyField(
-        Label, blank=True, verbose_name=_("Labels")
+        Label,
+        blank=True,
+        verbose_name=_("Labels")
     )
 
     def __str__(self):

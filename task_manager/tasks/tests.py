@@ -7,12 +7,7 @@ from .views import TaskCreate, TaskUpdate, TaskDelete
 
 
 class TestCreate(TestCase):
-    fixtures = [
-        'labels.json',
-        'tasks.json',
-        'statuses.json',
-        'users.json'
-    ]
+    fixtures = ["labels.json", "tasks.json", "statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -23,7 +18,7 @@ class TestCreate(TestCase):
             "name": "Test task",
             "description": "Test",
             "status": self.status.id,
-            "executor": self.executor.id
+            "executor": self.executor.id,
         }
 
     def test_index_tasks(self):
@@ -38,24 +33,19 @@ class TestCreate(TestCase):
 
         response = self.client.get(reverse("task_create"))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(reverse("task_create"), '/tasks/create/')
+        self.assertEquals(reverse("task_create"), "/tasks/create/")
         self.assertIs(response.resolver_match.func.view_class, TaskCreate)
 
         response = self.client.post(reverse("task_create"), self.created_task)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], reverse("tasks_index"))
+        self.assertEqual(response["Location"], reverse("tasks_index"))
 
         response = self.client.get(reverse("tasks_index"))
         self.assertContains(response, "Test task")
 
 
 class TestUpdate(TestCase):
-    fixtures = [
-        'labels.json',
-        'tasks.json',
-        'statuses.json',
-        'users.json'
-    ]
+    fixtures = ["labels.json", "tasks.json", "statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -67,7 +57,7 @@ class TestUpdate(TestCase):
             "name": "updated task",
             "description": "Updated Description",
             "status": self.status.id,
-            "executor": self.executor.id
+            "executor": self.executor.id,
         }
 
     def test_tasks_update(self):
@@ -83,19 +73,14 @@ class TestUpdate(TestCase):
 
         response = self.client.post(url_update, self.updated_task)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], reverse("tasks_index"))
+        self.assertEqual(response["Location"], reverse("tasks_index"))
 
         response = self.client.get(reverse("tasks_index"))
         self.assertContains(response, "updated task")
 
 
 class TestDelete(TestCase):
-    fixtures = [
-        'labels.json',
-        'tasks.json',
-        'statuses.json',
-        'users.json'
-    ]
+    fixtures = ["labels.json", "tasks.json", "statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -114,12 +99,9 @@ class TestDelete(TestCase):
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(url_delete, "/tasks/1/delete/")
-        self.assertIs(
-            response.resolver_match.func.view_class,
-            TaskDelete
-        )
+        self.assertIs(response.resolver_match.func.view_class, TaskDelete)
 
         response = self.client.post(url_delete)
         self.assertRedirects(response, reverse("tasks_index"), 302)
-        self.assertEqual(response['Location'], reverse("tasks_index"))
+        self.assertEqual(response["Location"], reverse("tasks_index"))
         self.assertFalse(Task.objects.filter(name="one").exists())

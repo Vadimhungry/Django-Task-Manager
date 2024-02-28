@@ -5,15 +5,12 @@ from task_manager.users.models import CustomUser
 from task_manager.statuses.views import (
     StatusCreateFormView,
     StatusUpdateFormView,
-    StatusDeleteFormView
+    StatusDeleteFormView,
 )
 
 
 class TestCreate(TestCase):
-    fixtures = [
-        "statuses.json",
-        "users.json"
-    ]
+    fixtures = ["statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -32,7 +29,8 @@ class TestCreate(TestCase):
         )
 
         response = self.client.post(
-            reverse('status_create'), data={"name": "Another status"})
+            reverse("status_create"), data={"name": "Another status"}
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("statuses_index"))
 
@@ -41,10 +39,7 @@ class TestCreate(TestCase):
 
 
 class TestUpdate(TestCase):
-    fixtures = [
-        "statuses.json",
-        "users.json"
-    ]
+    fixtures = ["statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -53,8 +48,10 @@ class TestUpdate(TestCase):
         self.updated_status = {"name": "Updated status"}
 
     def test_status_update(self):
-        url_update = reverse("status_update",
-                             kwargs={"status_id": self.old_status.pk})
+        url_update = reverse(
+            "status_update",
+            kwargs={"status_id": self.old_status.pk}
+        )
 
         response = self.client.get(url_update)
         self.assertEquals(response.status_code, 200)
@@ -62,22 +59,21 @@ class TestUpdate(TestCase):
             url_update,
             f"/statuses/{self.old_status.pk}/update/"
         )
-        self.assertIs(response.resolver_match.func.view_class,
-                      StatusUpdateFormView)
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            StatusUpdateFormView
+        )
 
         response = self.client.post(url_update, self.updated_status)
         self.assertRedirects(response, reverse("statuses_index"), 302)
-        self.assertEqual(response['Location'], reverse("statuses_index"))
+        self.assertEqual(response["Location"], reverse("statuses_index"))
 
         response = self.client.get(reverse("statuses_index"))
         self.assertContains(response, "Updated status")
 
 
 class TestDelete(TestCase):
-    fixtures = [
-        'statuses.json',
-        'users.json'
-    ]
+    fixtures = ["statuses.json", "users.json"]
 
     def setUp(self):
         self.client = Client()
@@ -105,5 +101,5 @@ class TestDelete(TestCase):
             response.resolver_match.func.view_class,
             StatusDeleteFormView
         )
-        self.assertEqual(response['Location'], reverse("statuses_index"))
+        self.assertEqual(response["Location"], reverse("statuses_index"))
         self.assertFalse(Status.objects.filter(name="second").exists())
