@@ -1,114 +1,114 @@
 from django.test import TestCase, Client
-from django.urls import reverse, reverse_lazy
-from .models import CustomUser
+from django.urls import reverse
+from .views import UserCreateFormView, UserUpdateFormView, UserDeleteFormView
+from .forms import UserCreationForm, CustomUserCreationForm
+from django.contrib.auth import get_user_model
+
+class TestCreateUser(TestCase):
+    fixtures = ['users.json']
+
+    def setUp(self):
+        self.client = Client()
+        self.new_user = {
+            "first_name": "Natasha",
+            "last_name": "Noga",
+            "username": "New",
+            "password1": "QwertySuperP@ssword3",
+            "password2": "QwertySuperP@ssword3"}
+
+    def test_create_user(self):
+        response = self.client.get(reverse("users_index"))
+        self.assertNotContains(response, "Natasha Noga")
+
+        response = self.client.get(reverse("user_create"))
+        self.assertEquals(reverse("user_create"), '/users/create/')
+        self.assertIsInstance(response.context['form'], UserCreationForm)
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            UserCreateFormView
+        )
+
+        response = self.client.post(reverse("user_create"), self.new_user)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], "/login/")
+
+        response = self.client.get(reverse('users_index'))
+        self.assertContains(response, "Natasha Noga")
 
 
-class TestUsers(TestCase):
-    fixtures = [
-        "user.json",
-    ]
+class TestUpdateUser(TestCase):
+    fixtures = ['users.json']
+
+    def setUp(self):
+        self.user = get_user_model().objects.get(username="Alpha")
+        self.new_user = {
+            "username": "Updated",
+            "first_name": "Ulyana",
+            "last_name": "Umina",
+            "password1": "2QwertySuperP@ssword3",
+            "password2": "2QwertySuperP@ssword3"
+        }
+        self.url = reverse("user_update", kwargs={"user_id": self.user.id})
+
+    def test_update_user(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(self.url, f"/users/{self.user.id}/update/")
+        self.assertIsInstance(response.context['form'], CustomUserCreationForm)
+
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, self.new_user)
+
+        self.assertEquals(self.url, f"/users/{self.user.pk}/update/")
+        self.assertRedirects(response, reverse("users_index"), 302)
+        self.assertEqual(response['Location'], "/users/")
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            UserUpdateFormView
+        )
+
+        response = self.client.get(reverse("users_index"))
+        self.assertContains(response, "Ulyana Umina")
+
+
+class TestDeleteUser(TestCase):
+    fixtures = ['users.json']
 
     def setUp(self):
         self.client = Client()
 
-    def test_index(self):
-        response = self.client.get("/users/")
-        response.status_code
-        self.assertEqual(response.status_code, 200)
+    def test_delete_users(self):
+        del_user = \
+            get_user_model().objects.get(username="Beta")
+        response = self.client.get(
+            reverse(
+                "delete_user",
+                kwargs={"user_id": del_user.id}
+            )
+        )
 
-    def test_user_create_get(self):
-        response = self.client.get("/users/create/")
-        response.status_code
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            UserDeleteFormView
+        )
+        self.assertEqual(response['Location'], "/users/")
 
-    def test_user_create_post(self):
-        valid_form_data = {
-            "first_name": "2Ivan",
-            "last_name": "2Durak",
-            "username": "2testuser",
-            "password1": "2Testpassword12345",
-            "password2": "2Testpassword12345",
-        }
-
-        # Отправляем POST запрос с валидными данными формы
+        self.client.force_login(del_user)
         response = self.client.post(
-            reverse("user_create"), valid_form_data, follow=True
+            reverse(
+                "delete_user",
+                kwargs={"user_id": del_user.id}
+            )
         )
-
-        # Проверяем, что ответ содержит сообщение об успешной регистрации
-        self.assertContains(response, "Пользователь успешно зарегистрирован")
-
-    def test_user_login(self):
-        valid_form_data = {
-            "first_name": "2Ivan",
-            "last_name": "2Durak",
-            "username": "2testuser",
-            "password1": "2Testpassword12345",
-            "password2": "2Testpassword12345",
-        }
-
-        self.client.post(reverse("user_create"), valid_form_data)
-
-        login_url = reverse("user_login")
-        login_data = {
-            "username": "2testuser",
-            "password": "2Testpassword12345",
-        }
-
-        # Send a POST request to the login view with credentials
-        response = self.client.post(login_url, data=login_data, follow=True)
-        self.assertTrue("_auth_user_id" in self.client.session)
-        self.assertRedirects(response, reverse_lazy("index"), status_code=302)
-        self.assertContains(response, "Вы залогинены")
-
-    from django.contrib.auth.models import User
-
-    def test_user_update(self):
-        # Создаем пользователя
-        valid_form_data = {
-            "first_name": "Ivan",
-            "last_name": "Durak",
-            "username": "2testuser",
-            "password1": "2Testpassword12345",
-            "password2": "2Testpassword12345",
-        }
-        self.client.post(reverse("user_create"), valid_form_data)
-
-        # Получаем ID пользователя
-        user_id = CustomUser.objects.get(username="testuser").id
-
-        # Отправляем GET запрос на страницу обновления пользователя
-        response = self.client.get(f"/users/{user_id}/update/", follow=True)
-        self.assertEqual(
-            response.status_code,
-            200)
-        self.assertContains(
-            response, "У вас нет прав для изменения другого пользователя."
+        self.assertEqual(response.status_code, 302)
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            UserDeleteFormView
         )
-
-        # login as 2testuser
-        login_url = reverse("user_login")
-        login_data = {
-            "username": "2testuser",
-            "password": "2Testpassword12345",
-        }
-
-        # Send a POST request to the login view with credentials
-        self.client.post(login_url, data=login_data, follow=True)
-        self.assertTrue("_auth_user_id" in self.client.session)
-
-        new_form_data = {
-            "first_name": "Updated Ivan",
-            "last_name": "Updated Durak",
-            "username": "Updated2testuser",
-            "password1": "2Testpassword12345",
-            "password2": "2Testpassword12345",
-        }
-        user_id = CustomUser.objects.get(username="2testuser").id
-        update_url = reverse("user_update", kwargs={"user_id": user_id})
-        response = self.client.post(
-            update_url,
-            data=new_form_data,
-            follow=True
-        )
-        self.assertContains(response, "Пользователь успешно изменен")
+        self.assertEqual(response['Location'], "/users/")
+        self.assertFalse(
+            get_user_model().objects.filter(username="Beta").exists()
+                         )

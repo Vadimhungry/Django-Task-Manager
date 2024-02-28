@@ -1,0 +1,29 @@
+[
+{
+    "model": "labels.label",
+    "pk": 1,
+    "fields": {
+        "name": "label_1",
+        "created_at": "2024-02-14T13:52:03.078Z",
+        "updated_at": "2024-02-15T09:33:49.640Z"
+    }
+},
+{
+    "model": "labels.label",
+    "pk": 2,
+    "fields": {
+        "name": "label_2",
+        "created_at": "2024-02-16T08:15:39.377Z",
+        "updated_at": "2024-02-16T08:15:39.377Z"
+    }
+},
+{
+    "model": "labels.label",
+    "pk": 3,
+    "fields": {
+        "name": "label_3",
+        "created_at": "2024-02-16T08:15:42.480Z",
+        "updated_at": "2024-02-16T08:15:42.480Z"
+    }
+}
+]

@@ -1,60 +1,99 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Status
+from task_manager.users.models import CustomUser
+from task_manager.statuses.views import StatusCreateFormView, StatusUpdateFormView, StatusDeleteFormView
 
 
-class TestStatuses(TestCase):
+class TestCreate(TestCase):
+    fixtures = [
+        "statuses.json",
+        "users.json"
+    ]
+
     def setUp(self):
         self.client = Client()
-        valid_form_data = {
-            "first_name": "2Ivan",
-            "last_name": "2Durak",
-            "username": "2testuser",
-            "password1": "2Testpassword12345",
-            "password2": "2Testpassword12345",
-        }
+        self.client.force_login(CustomUser.objects.first())
 
-        self.client.post(reverse("user_create"), valid_form_data)
+    def test_status_create(self):
+        response = self.client.get(reverse("statuses_index"))
+        self.assertNotContains(response, "Another status")
 
-        login_url = reverse("user_login")
-        login_data = {
-            "username": "2testuser",
-            "password": "2Testpassword12345",
-        }
-
-        # Send a POST request to the login view with credentials
-        self.client.post(login_url, data=login_data, follow=True)
-        self.assertTrue("_auth_user_id" in self.client.session)
-
-        response = self.client.get("/statuses/create/")
-        self.assertEqual(response.status_code, 200)
-        status_create_url = reverse("status_create")
-        data = {"name": "fun status"}
-
-        response = self.client.post(status_create_url, data, follow=True)
-        self.assertContains(response, "Статус успешно создан")
-
-    def test_index(self):
-        response = self.client.get("/statuses/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_create(self):
-        response = self.client.get("/statuses/create/")
-        self.assertEqual(response.status_code, 200)
-        status_create_url = reverse("status_create")
-        data = {"name": "fun status"}
-        response = self.client.post(status_create_url, data, follow=True)
-        self.assertContains(response, "Статус успешно создан")
-
-    def test_update(self):
-        new_form_data = {
-            "name": "Updated Status",
-        }
-        status_id = Status.objects.get(name="fun status").id
-        update_url = reverse("status_update", kwargs={"status_id": status_id})
-        response = self.client.post(
-            update_url,
-            data=new_form_data,
-            follow=True
+        response = self.client.get(reverse("status_create"))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(reverse("status_create"), "/statuses/create/")
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            StatusCreateFormView
         )
-        self.assertContains(response, "Updated Status")
+
+        response = self.client.post(
+            reverse('status_create'), data={"name": "Another status"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], reverse("statuses_index"))
+
+        response = self.client.get(reverse("statuses_index"))
+        self.assertContains(response, "Another status")
+
+
+class TestUpdate(TestCase):
+    fixtures = [
+        "statuses.json",
+        "users.json"
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(CustomUser.objects.first())
+        self.old_status = Status.objects.all().first()
+        self.updated_status = {"name": "Updated status"}
+
+    def test_status_update(self):
+        url_update = reverse("status_update",
+                             kwargs={"status_id": self.old_status.pk})
+
+        response = self.client.get(url_update)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(url_update, f"/statuses/{self.old_status.pk}/update/")
+        self.assertIs(response.resolver_match.func.view_class,
+                      StatusUpdateFormView)
+
+        response = self.client.post(url_update, self.updated_status)
+        self.assertRedirects(response, reverse("statuses_index"), 302)
+        self.assertEqual(response['Location'], reverse("statuses_index"))
+
+        response = self.client.get(reverse("statuses_index"))
+        self.assertContains(response, "Updated status")
+
+
+class TestDelete(TestCase):
+    fixtures = [
+        'statuses.json',
+        'users.json'
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(CustomUser.objects.first())
+
+    def test_delete_statuses(self):
+        del_status = Status.objects.get(name="second")
+        url_delete = reverse("delete_status", kwargs={"status_id": del_status.id})
+
+        response = self.client.get(url_delete)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(url_delete, f"/statuses/{del_status.id}/delete/")
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            StatusDeleteFormView
+        )
+
+        response = self.client.post(url_delete)
+        self.assertEquals(url_delete, f"/statuses/{del_status.id}/delete/")
+        self.assertRedirects(response, reverse("statuses_index"), 302)
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            StatusDeleteFormView
+        )
+        self.assertEqual(response['Location'], reverse("statuses_index"))
+        self.assertFalse(Status.objects.filter(name="second").exists())

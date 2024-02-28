@@ -1,128 +1,122 @@
-from django.test import TestCase
 from django.urls import reverse
 from .models import Task
 from ..users.models import CustomUser
 from ..statuses.models import Status
-from ..labels.models import Label
-from ..tasks.filters import TaskFilter
-from django.test import RequestFactory
+from django.test import TestCase, Client
+from .views import TaskCreate, TaskUpdate, TaskDelete
 
 
-class TaskViewTests(TestCase):
+class TestCreate(TestCase):
+    fixtures = [
+        'labels.json',
+        'tasks.json',
+        'statuses.json',
+        'users.json'
+    ]
+
     def setUp(self):
-        # Создаем тестового пользователя
-        self.user = CustomUser.objects.create_user(
-            username="testuser", password="12345"
-        )
-        self.client.login(username="testuser", password="12345")
-
-        # Создаем статус и метку для использования в тесте
-        self.status = Status.objects.create(name="Test Status")
-        self.label = Label.objects.create(name="Test Label")
-
-        # URL для создания задачи
-        self.url = reverse("task_create")
-
-        self.task = Task.objects.create(
-            name="Test Task",
-            description="Test Description",
-            executor=self.user,
-            author=self.user,
-            status=self.status,
-        )
-
-    def test_task_create_view(self):
-        data = {
-            "name": "2Test Task",
-            "description": "2Test Description",
-            "executor": self.user.id,
-            "author": self.user.id,
+        self.client = Client()
+        self.client.force_login(CustomUser.objects.first())
+        self.status = Status.objects.get(name="first")
+        self.executor = CustomUser.objects.get(username="Gamma")
+        self.created_task = {
+            "name": "Test task",
+            "description": "Test",
             "status": self.status.id,
-            "labels": [self.label.id],
+            "executor": self.executor.id
         }
 
-        response = self.client.post(self.url, data)
-
-        self.assertTrue(Task.objects.filter(name="2Test Task").exists())
-
-        created_task = Task.objects.get(name="2Test Task")
-
-        self.assertEqual(created_task.name, "2Test Task")
-        self.assertEqual(created_task.description, "2Test Description")
-        self.assertEqual(created_task.executor, self.user)
-        self.assertEqual(created_task.author, self.user)
-        self.assertEqual(created_task.status, self.status)
-        self.assertTrue(created_task.labels.filter(id=self.label.id).exists())
-
-        self.assertRedirects(response, reverse("tasks_index"))
-
-    def test_index_view(self):
+    def test_index_tasks(self):
         response = self.client.get(reverse("tasks_index"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "tasks/index.html")
+        self.assertContains(response, "one")
+        self.assertContains(response, "two")
+        self.assertNotContains(response, "ghost")
 
-    def test_task_update_view(self):
-        url = reverse("task_update", kwargs={"task_id": self.task.id})
+    def test_tasks_create(self):
+        response = self.client.get(reverse("tasks_index"))
+        self.assertNotContains(response, "Test task")
 
-        updated_data = {
-            "name": "777Updated Test Task",
-            "description": "777Updated Test Description",
-            "executor": self.user.id,
-            "author": self.user.id,
+        response = self.client.get(reverse("task_create"))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(reverse("task_create"), '/tasks/create/')
+        self.assertIs(response.resolver_match.func.view_class, TaskCreate)
+
+        response = self.client.post(reverse("task_create"), self.created_task)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], reverse("tasks_index"))
+
+        response = self.client.get(reverse("tasks_index"))
+        self.assertContains(response, "Test task")
+
+
+class TestUpdate(TestCase):
+    fixtures = [
+        'labels.json',
+        'tasks.json',
+        'statuses.json',
+        'users.json'
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(CustomUser.objects.first())
+        self.status = Status.objects.all().first()
+        self.task = Task.objects.all().first()
+        self.executor = CustomUser.objects.get(username="Alpha")
+        self.updated_task = {
+            "name": "updated task",
+            "description": "Updated Description",
             "status": self.status.id,
-            "labels": [self.label.id],
+            "executor": self.executor.id
         }
 
-        response = self.client.post(url, updated_data)
-        self.task.refresh_from_db()
-        self.assertEqual(self.task.name, "777Updated Test Task")
-        self.assertEqual(self.task.description, "777Updated Test Description")
-        self.assertEqual(self.task.status, self.status)
-        self.assertTrue(self.task.labels.filter(id=self.label.id).exists())
-        self.assertRedirects(response, reverse("tasks_index"))
+    def test_tasks_update(self):
+        url_update = reverse("task_update", kwargs={"task_id": self.task.id})
+
+        response = self.client.get(reverse("tasks_index"))
+        self.assertNotContains(response, "updated task")
+
+        response = self.client.get(url_update)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(url_update, f"/tasks/{self.task.pk}/update/")
+        self.assertIs(response.resolver_match.func.view_class, TaskUpdate)
+
+        response = self.client.post(url_update, self.updated_task)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], reverse("tasks_index"))
+
+        response = self.client.get(reverse("tasks_index"))
+        self.assertContains(response, "updated task")
 
 
-class TaskFilterTestCase(TestCase):
+class TestDelete(TestCase):
+    fixtures = [
+        'labels.json',
+        'tasks.json',
+        'statuses.json',
+        'users.json'
+    ]
+
     def setUp(self):
-        self.user = CustomUser.objects.create_user(
-            username="testuser", password="12345"
-        )
-        self.client.login(username="testuser", password="12345")
+        self.client = Client()
+        self.client.force_login(CustomUser.objects.first())
+        self.del_task = Task.objects.get(name="one")
 
-        # Создаем статус и метку для использования в тесте
-        self.status = Status.objects.create(name="Test Status")
-        self.label = Label.objects.create(name="Test Label")
+    def test_delete_tasks(self):
+        response = self.client.get(reverse("tasks_index"))
+        self.assertContains(response, "one")
 
-        # URL для создания задачи
-        self.url = reverse("task_create")
+        url_delete = reverse("task_delete", kwargs={"task_id": self.del_task.id})
 
-        self.task1 = Task.objects.create(
-            name="Test Task",
-            description="Test Description",
-            executor=self.user,
-            author=self.user,
-            status=self.status,
-        )
-        self.task2 = Task.objects.create(
-            name="2Test Task",
-            description="2Test Description",
-            executor=self.user,
-            author=self.user,
-            status=self.status,
+        response = self.client.get(url_delete)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(url_delete, f"/tasks/1/delete/")
+        self.assertIs(
+            response.resolver_match.func.view_class,
+            TaskDelete
         )
 
-    def test_filter_created_by_current_user(self):
-        # Test for regular user
-        request = RequestFactory().get("/")
-        request.user = CustomUser.objects.create_user(
-            username="regular_user",
-            email="user@example.com",
-            password="password"
-        )
-        filter = TaskFilter(
-            {"created_by_current_user": "on"},
-            queryset=Task.objects.all(),
-            request=request,
-        )
-
-        self.assertIsNotNone(filter.qs)
+        response = self.client.post(url_delete)
+        self.assertRedirects(response, reverse("tasks_index"), 302)
+        self.assertEqual(response['Location'], reverse("tasks_index"))
+        self.assertFalse(Task.objects.filter(name="one").exists())

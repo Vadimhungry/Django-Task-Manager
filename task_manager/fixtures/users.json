@@ -1,0 +1,56 @@
+[
+{
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+        "password": "123qwerty",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Alpha",
+        "first_name": "Alex",
+        "last_name": "Algorithmos",
+        "email": "alex@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-01-30T13:27:53.880Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.customuser",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$720000$IOdvgwfWKIEcGC1ooNXNq7$7luO46NOhGyj/ES4c43WTjMHJ5lj7OwaOfhO6XN5k4U=",
+        "last_login": "2024-02-20T13:25:35.961Z",
+        "is_superuser": true,
+        "username": "Beta",
+        "first_name": "Boris",
+        "last_name": "Buther",
+        "email": "boris@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-01-30T15:38:51.903Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.customuser",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$720000$qLDZ0yqwpMMzws1hxq9gXz$U3UmCYHIpcE+NsRByMIaHLKVZt/YeSW6fhpAINUoTVw=",
+        "last_login": "2024-02-07T14:13:39.730Z",
+        "is_superuser": false,
+        "username": "Gamma",
+        "first_name": "Goga",
+        "last_name": "Gorbachev",
+        "email": "goga@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-01-31T16:23:25.335Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
