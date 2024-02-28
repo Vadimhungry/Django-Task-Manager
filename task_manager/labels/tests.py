@@ -41,6 +41,7 @@ class TestCreate(TestCase):
         response = self.client.get(reverse("labels_index"))
         self.assertContains(response, 'Test label')
 
+
 class TestUpdate(TestCase):
     fixtures = [
         'labels.json',
@@ -52,9 +53,11 @@ class TestUpdate(TestCase):
         self.old_label = Label.objects.all().first()
         self.updated_label = {"name": "updated_label"}
 
-
     def test_label_update(self):
-        url_update = reverse("label_update", kwargs={"label_id": self.old_label.id})
+        url_update = reverse(
+            "label_update",
+            kwargs={"label_id": self.old_label.id}
+        )
 
         response = self.client.get(url_update)
         self.assertEquals(response.status_code, 200)
@@ -69,6 +72,7 @@ class TestUpdate(TestCase):
         response = self.client.get(reverse("labels_index"))
         self.assertContains(response, "updated_label")
 
+
 class TestDelete(TestCase):
     fixtures = ['labels.json',
                 'users.json']
@@ -82,7 +86,10 @@ class TestDelete(TestCase):
         response = self.client.get(reverse("labels_index"))
         self.assertContains(response, 'label_1')
 
-        url_delete = reverse("label_delete", kwargs={"label_id": self.del_label.id})
+        url_delete = reverse(
+            "label_delete",
+            kwargs={"label_id": self.del_label.id}
+        )
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(url_delete, f"/labels/{self.del_label.id}/delete/")

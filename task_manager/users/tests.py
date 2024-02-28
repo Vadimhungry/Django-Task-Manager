@@ -4,6 +4,7 @@ from .views import UserCreateFormView, UserUpdateFormView, UserDeleteFormView
 from .forms import UserCreationForm, CustomUserCreationForm
 from django.contrib.auth import get_user_model
 
+
 class TestCreateUser(TestCase):
     fixtures = ['users.json']
 

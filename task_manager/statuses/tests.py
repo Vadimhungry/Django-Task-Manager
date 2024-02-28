@@ -2,7 +2,11 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Status
 from task_manager.users.models import CustomUser
-from task_manager.statuses.views import StatusCreateFormView, StatusUpdateFormView, StatusDeleteFormView
+from task_manager.statuses.views import (
+    StatusCreateFormView,
+    StatusUpdateFormView,
+    StatusDeleteFormView
+)
 
 
 class TestCreate(TestCase):
@@ -54,7 +58,10 @@ class TestUpdate(TestCase):
 
         response = self.client.get(url_update)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_update, f"/statuses/{self.old_status.pk}/update/")
+        self.assertEquals(
+            url_update,
+            f"/statuses/{self.old_status.pk}/update/"
+        )
         self.assertIs(response.resolver_match.func.view_class,
                       StatusUpdateFormView)
 
@@ -78,7 +85,10 @@ class TestDelete(TestCase):
 
     def test_delete_statuses(self):
         del_status = Status.objects.get(name="second")
-        url_delete = reverse("delete_status", kwargs={"status_id": del_status.id})
+        url_delete = reverse(
+            "delete_status",
+            kwargs={"status_id": del_status.id}
+        )
 
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)

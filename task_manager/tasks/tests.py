@@ -106,11 +106,14 @@ class TestDelete(TestCase):
         response = self.client.get(reverse("tasks_index"))
         self.assertContains(response, "one")
 
-        url_delete = reverse("task_delete", kwargs={"task_id": self.del_task.id})
+        url_delete = reverse(
+            "task_delete",
+            kwargs={"task_id": self.del_task.id}
+        )
 
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_delete, f"/tasks/1/delete/")
+        self.assertEquals(url_delete, "/tasks/1/delete/")
         self.assertIs(
             response.resolver_match.func.view_class,
             TaskDelete
