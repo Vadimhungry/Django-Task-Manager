@@ -1,15 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm,CustomUserChangeForm
-from django.views import View
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 from django.contrib import messages
-from django.views.generic.edit import CreateView, UpdateView,DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.db.models.deletion import ProtectedError
 from django.utils.translation import gettext as _
 from task_manager.utils import (PermissionUserMixin, AuthRequiredMixin,
                                 ProtectedDeletionMixin)
@@ -42,10 +37,8 @@ class UserCreate(CreateView):
 
 
 class UserUpdateFormView(
-    AuthRequiredMixin,
-    PermissionUserMixin,
-    SuccessMessageMixin,
-    UpdateView):
+    AuthRequiredMixin, PermissionUserMixin, SuccessMessageMixin, UpdateView
+):
     template_name = "users/update_user.html"
     model = CustomUser
     form_class = CustomUserChangeForm

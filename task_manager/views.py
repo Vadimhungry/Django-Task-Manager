@@ -8,7 +8,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 
 def index(request):
-    user = request.user
     return render(
         request,
         "index.html",

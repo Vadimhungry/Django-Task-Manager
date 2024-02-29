@@ -50,18 +50,25 @@ class TestUpdateUser(TestCase):
             "password2": "2QwertySuperP@ssword3",
         }
         self.url = reverse("user_update", kwargs={"pk": self.user.id})
+
     def test_update_user(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(self.url, reverse("user_update", kwargs={"pk": self.user.id}))
+        self.assertEquals(
+            self.url,
+            reverse("user_update", kwargs={"pk": self.user.id})
+        )
         self.assertIsInstance(response.context["form"], CustomUserCreationForm)
 
         self.client.force_login(self.user)
         response = self.client.post(self.url, self.new_user)
 
-        self.assertEquals(self.url, reverse("user_update", kwargs={"pk": self.user.id}))
+        self.assertEquals(
+            self.url,
+            reverse("user_update", kwargs={"pk": self.user.id})
+        )
         self.assertRedirects(response, reverse("users_index"), 302)
         self.assertEqual(response["Location"], reverse("users_index"))
         self.assertIs(
