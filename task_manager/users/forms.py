@@ -1,10 +1,8 @@
-from django import forms
 from django.contrib.auth.forms import (
     UserCreationForm,
     UserChangeForm,
 )
 from .models import CustomUser
-from django.utils.translation import gettext as _
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -17,20 +15,9 @@ class CustomUserCreationForm(UserCreationForm):
             "password1",
             "password2"
         )
-        widgets = {
-            "first_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": _("Name")}
-            ),
-            "last_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": _("Surname")}
-            ),
-            "username": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": _("Username")}
-            ),
-        }
 
 
-class CustomUserChangeForm(UserChangeForm):
-    class Meta:
-        model = CustomUser
-        fields = ("username", "email")
+
+class CustomUserChangeForm(CustomUserCreationForm):
+    def clean_username(self):
+        return self.cleaned_data.get("username")

@@ -65,10 +65,7 @@ class TaskDelete(
         return get_object_or_404(Task, id=task_id)
 
     def handle_no_permission(self):
-        messages.warning(
-            self.request,
-            _("The task can only be deleted by its author")
-        )
+        messages.warning(self.request, _("The task can only be deleted by its author"))
         return HttpResponseRedirect(reverse("tasks_index"))
 
 

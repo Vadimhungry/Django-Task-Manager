@@ -1,128 +1,70 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm,CustomUserChangeForm
 from django.views import View
 from .models import CustomUser
 from django.contrib import messages
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import CreateView, UpdateView,DeleteView
+from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.db.models.deletion import ProtectedError
 from django.utils.translation import gettext as _
-from django.contrib.auth.views import LogoutView
+from task_manager.utils import (PermissionUserMixin, AuthRequiredMixin,
+                                ProtectedDeletionMixin)
 
 
-class IndexView(View):
-    def get(self, request, *args, **kwargs):
-        users = CustomUser.objects.all()[:15]
-        return render(request, "users/index.html", context={"users": users})
+class IndexView(ListView):
+    model = CustomUser
+    template_name = "users/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["users"] = CustomUser.objects.all()
+        return context
 
 
-class UserCreateFormView(View):
-    def get(self, request, *args, **kwargs):
-        form = CustomUserCreationForm()
-        return render(request, "users/create_user.html", {"form": form})
+class UserCreate(CreateView):
+    model = CustomUser
+    form_class = CustomUserCreationForm
+    template_name = "users/create_user.html"
+    success_url = reverse_lazy("user_login")
 
-    def post(self, request, *args, **kwargs):
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                self.request,
-                _("The user has been successfully registered"),
-                extra_tags="alert-success",
-            )
-            return redirect("user_login")
-        return render(request, "users/create_user.html", {"form": form})
-
-
-class UserUpdateFormView(UserPassesTestMixin, View):
-    def test_func(self):
-        current_user = self.request.user
-        user_id = self.kwargs.get("user_id")
-        if current_user.is_authenticated:
-            if current_user.id == user_id or current_user.is_staff is True:
-                return True
-        return False
-
-    def handle_no_permission(self):
-        messages.warning(
+    def form_valid(self, form):
+        messages.success(
             self.request,
-            _("You do not have permission to modify another user.")
+            _("The user has been successfully registered"),
+            extra_tags="alert-success",
         )
-        return redirect("users_index")
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-    def get(self, request, *args, **kwargs):
-        user_id = kwargs.get("user_id")
-        user = get_object_or_404(CustomUser, id=user_id)
-        form = CustomUserCreationForm(instance=user)
-        return render(
-            request,
-            "users/update_user.html",
-            {"form": form, "user_id": user_id}
-        )
 
-    def post(self, request, *args, **kwargs):
-        user_id = kwargs.get("user_id")
-        user = CustomUser.objects.get(id=user_id)
-        form = CustomUserCreationForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                self.request,
-                _("The user has been successfully updated")
-            )
-            return redirect("users_index")
-
-        return render(
-            request,
-            "users/update_user.html",
-            {"form": form, "user_id": user_id}
-        )
+class UserUpdateFormView(
+    AuthRequiredMixin,
+    PermissionUserMixin,
+    SuccessMessageMixin,
+    UpdateView):
+    template_name = "users/update_user.html"
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy("users_index")
+    success_message = _("User changed successfully")
+    no_permis_url = reverse_lazy("users_index")
+    no_permis_message = _("You do not have permission to change another user.")
 
 
 class UserDeleteFormView(
-    SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView
+    AuthRequiredMixin, PermissionUserMixin,
+    ProtectedDeletionMixin, SuccessMessageMixin, DeleteView
 ):
     model = CustomUser
     success_url = reverse_lazy("users_index")
     template_name = "users/delete_user.html"
     success_message = _("The user has been successfully deleted")
+    no_permis_url = reverse_lazy("user_login")
+    no_permis_message = _("You do not have permission to change another user.")
 
-    def test_func(self):
-        current_user = self.request.user
-        user_id = self.kwargs.get("user_id")
-        if current_user.id == user_id or current_user.is_staff is True:
-            return True
-        return False
-
-    def get_object(self, queryset=None):
-        user_id = self.kwargs.get("user_id")
-        return get_object_or_404(CustomUser, id=user_id)
-
-    def handle_no_permission(self):
-        messages.warning(
-            self.request,
-            _("You do not have permission to modify another user.")
-        )
-        return redirect("users_index")
-
-    def post(self, request, *args, **kwargs):
-        try:
-            return super().post(request, *args, **kwargs)
-        except ProtectedError:
-            messages.warning(
-                self.request,
-                _("Unable to delete the user because it is being used."),
-            )
-            return redirect("users_index")
-
-
-class CustomLogout(SuccessMessageMixin, LogoutView):
-    next_page = "index"
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        messages.info(self.request, _("You have been logged out."))
-        return response
+    no_protected_redirect_url = reverse_lazy("users_index")
+    protected_message = _("Cannot delete user because it is in use")

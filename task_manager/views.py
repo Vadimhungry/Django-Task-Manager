@@ -3,6 +3,8 @@ from django.contrib.auth.views import LoginView
 from .forms import CustomAuthForm
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.contrib.auth.views import LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 def index(request):
@@ -10,9 +12,6 @@ def index(request):
     return render(
         request,
         "index.html",
-        context={
-            "user": user,
-        },
     )
 
 
@@ -22,6 +21,14 @@ class UserLoginView(LoginView):
     next_page = "index"
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         messages.success(self.request, _("You are logged in"))
+        return super().form_valid(form)
+
+
+class CustomLogout(SuccessMessageMixin, LogoutView):
+    next_page = "index"
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        messages.info(self.request, _("You have been logged out."))
         return response

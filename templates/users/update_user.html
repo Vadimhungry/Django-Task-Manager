@@ -15,7 +15,7 @@
         </div>
     {% endif %}
 
-    <form action="{% url 'user_update' user_id=user_id %}" method="post">
+    <form action="{% url 'user_update' pk=user.pk %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% translate 'Edit' as button_name %}
