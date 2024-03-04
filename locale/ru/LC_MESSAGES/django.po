@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-29 15:14+0200\n"
+"POT-Creation-Date: 2024-02-29 16:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,14 +15,10 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: task_manager/forms.py:13
-#, fuzzy
-#| msgid "User name"
 msgid "Username"
 msgstr "Имя пользователя"
 
 #: task_manager/forms.py:15
-#, fuzzy
-#| msgid "Password:"
 msgid "Password"
 msgstr "Пароль"
 
@@ -114,44 +110,39 @@ msgstr "Задача успешно изменена"
 msgid "The task has been successfully deleted"
 msgstr "Задача успешно удалена"
 
-#: task_manager/tasks/views.py:68
+#: task_manager/tasks/views.py:70
 msgid "The task can only be deleted by its author"
 msgstr "Задачу может удалить только ее автор"
 
-#: task_manager/users/views.py:37
+#: task_manager/users/views.py:32
 msgid "The user has been successfully registered"
 msgstr "Пользователь успешно зарегистрирован"
 
-#: task_manager/users/views.py:53
+#: task_manager/users/views.py:46
 msgid "User changed successfully"
 msgstr "Пользователь успешно изменен"
 
-#: task_manager/users/views.py:55
+#: task_manager/users/views.py:48 task_manager/users/views.py:60
 msgid "You do not have permission to change another user."
 msgstr "У вас нет прав для изменения другого пользователя."
 
-#: task_manager/users/views.py:111
+#: task_manager/users/views.py:58
 msgid "The user has been successfully deleted"
 msgstr "Пользователь успешно удален"
 
-#: task_manager/users/views.py:127
-msgid "You do not have permission to modify another user."
-msgstr "У вас нет прав для изменения другого пользователя."
-
-#: task_manager/users/views.py:137
-msgid "Unable to delete the user because it is being used."
+#: task_manager/users/views.py:63
+msgid "Cannot delete user because it is in use"
 msgstr "Невозможно удалить пользователя, потому что он используется"
 
 #: task_manager/utils.py:12
-
 msgid "You are not logged in! Please log in."
 msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
 
-#: task_manager/views.py:24
+#: task_manager/views.py:23
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
-#: task_manager/views.py:33
+#: task_manager/views.py:32
 msgid "You have been logged out."
 msgstr "Вы разлогинены"
 
@@ -313,6 +304,9 @@ msgstr "Войти"
 msgctxt "User edit"
 msgid "Edit"
 msgstr "Изменение пользователя"
+
+#~ msgid "You do not have permission to modify another user."
+#~ msgstr "У вас нет прав для изменения другого пользователя."
 
 #~ msgid "Surname"
 #~ msgstr "Фамилия"

@@ -15,7 +15,7 @@
         </div>
     {% endif %}
 
-        <form action="{% url 'label_update' label_id=label_id %}" method="post">
+        <form action="{% url 'label_update' pk=pk %}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
             {% translate 'Update' as button_name %}

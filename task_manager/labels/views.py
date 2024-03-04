@@ -1,5 +1,5 @@
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .models import Label
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -38,13 +38,9 @@ class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     success_message = _("The label has been successfully updated")
     success_url = reverse_lazy("labels_index")
 
-    def get_object(self, queryset=None):
-        label_id = self.kwargs.get("label_id")
-        return get_object_or_404(Label, id=label_id)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["label_id"] = self.kwargs["label_id"]
+        context["pk"] = self.kwargs["pk"]
         return context
 
 
@@ -53,10 +49,6 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("labels_index")
     template_name = "labels/delete_label.html"
     success_message = _("The label has been successfully deleted")
-
-    def get_object(self, queryset=None):
-        label_id = self.kwargs.get("label_id")
-        return get_object_or_404(Label, id=label_id)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -67,7 +59,4 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
             )
             return redirect(reverse_lazy("labels_index"))
         else:
-            success_url = self.get_success_url()
-            self.object.delete()
-            messages.success(self.request, self.success_message)
-            return redirect(success_url)
+            return super().post(request, *args, **kwargs)
