@@ -92,6 +92,6 @@ class TaskDelete(
 
 class TaskRead(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        task_id = self.kwargs.get("task_id")
+        task_id = self.kwargs.get("pk")
         task = Task.objects.get(id=task_id)
         return render(request, "tasks/task.html", context={"task": task})
