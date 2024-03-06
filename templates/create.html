@@ -18,7 +18,11 @@
         <form action="{% url action_url_name %}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
-            {% translate 'Create' as button_name %}
+            {% if action_url_name == "user_create" %}
+                {% translate 'Register' as button_name %}
+            {% else %}
+                {% translate 'Create' as button_name %}
+            {% endif %}
             {% bootstrap_button button_type="submit" button_class="btn btn-primary" content=button_name %}
         </form>
     </div>
