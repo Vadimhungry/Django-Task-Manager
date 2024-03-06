@@ -34,6 +34,7 @@ class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Create label")
         context['action_url_name'] = "label_create"
+        context['button_name'] = _("Create")
         return context
 
 
@@ -49,6 +50,7 @@ class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context["pk"] = self.kwargs["pk"]
         context['title'] = _("Update label")
         context['action_url_name'] = "label_update"
+        context['button_name'] = _("Update")
         return context
 
 
@@ -62,6 +64,7 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Delete label")
         context['action_url_name'] = "label_delete"
+        context['button_name'] = _("Yes, delete")
         return context
 
     def post(self, request, *args, **kwargs):

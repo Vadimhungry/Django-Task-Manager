@@ -7,7 +7,6 @@
         <form action="{% url action_url_name pk=object.id %}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
-            {% translate 'Yes, delete' as button_name %}
             {% bootstrap_button button_type="submit" button_class="btn btn-danger" content=button_name %}
         </form>
 {% endblock %}

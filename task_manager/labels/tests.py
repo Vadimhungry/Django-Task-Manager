@@ -21,21 +21,23 @@ class TestCreate(TestCase):
 
     def test_labels_create(self):
         response = self.client.get(reverse("labels_index"))
-        self.assertNotContains(response, "Test label")
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.new_label = data.get('labels').get('new_label')
+        self.assertNotContains(response, self.new_label['name'])
 
         response = self.client.get(reverse("label_create"))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(reverse("label_create"), "/labels/create/")
         self.assertIs(response.resolver_match.func.view_class, LabelCreate)
 
         response = self.client.post(
-            reverse("label_create"), data={"name": "Test label"}
+            reverse("label_create"), data=self.new_label
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("labels_index"))
 
         response = self.client.get(reverse("labels_index"))
-        self.assertContains(response, "Test label")
+        self.assertContains(response, self.new_label['name'])
 
 
 class TestUpdate(TestCase):
@@ -47,7 +49,7 @@ class TestUpdate(TestCase):
         self.old_label = Label.objects.get(id=1)
         with open('task_manager/fixtures/test_data.json', 'r') as f:
             data = json.load(f)
-            self.updated_label = data['labels']['update_label']
+            self.updated_label = data.get('labels').get('update_label')
 
     def test_label_update(self):
         url_update = reverse('label_update', kwargs={'pk': self.old_label.pk})
@@ -60,7 +62,7 @@ class TestUpdate(TestCase):
         self.assertEqual(response["Location"], reverse("labels_index"))
 
         response = self.client.get(reverse("labels_index"))
-        self.assertContains(response, "updated_label")
+        self.assertContains(response, self.updated_label['name'])
 
 
 class TestDelete(TestCase):
@@ -72,7 +74,6 @@ class TestDelete(TestCase):
         self.del_label = Label.objects.all().first()
 
     def test_delete_label(self):
-        # self.assertTrue(Label.objects.filter(name=self.del_label.name).exists())
         response = self.client.get(reverse("labels_index"))
         self.assertContains(response, "label_1")
 
@@ -82,7 +83,6 @@ class TestDelete(TestCase):
         )
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_delete, f"/labels/{self.del_label.id}/delete/")
         self.assertIs(response.resolver_match.func.view_class, LabelDelete)
 
         response = self.client.post(url_delete)

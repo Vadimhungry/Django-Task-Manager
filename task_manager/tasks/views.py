@@ -38,6 +38,7 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Create task")
         context['action_url_name'] = "task_create"
+        context['button_name'] = _("Create")
         return context
 
 
@@ -56,6 +57,7 @@ class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Update task")
         context['action_url_name'] = "task_update"
+        context['button_name'] = _("Update")
         return context
 
 
@@ -80,6 +82,7 @@ class TaskDelete(
         context = super().get_context_data(**kwargs)
         context['title'] = _("Delete task")
         context['action_url_name'] = "task_delete"
+        context['button_name'] = _("Yes, delete")
         return context
 
     def handle_no_permission(self):

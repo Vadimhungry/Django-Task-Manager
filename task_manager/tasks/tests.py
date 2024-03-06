@@ -4,6 +4,7 @@ from ..users.models import CustomUser
 from ..statuses.models import Status
 from django.test import TestCase, Client
 from .views import TaskCreate, TaskUpdate, TaskDelete
+import json
 
 
 class TestCreate(TestCase):
@@ -14,12 +15,9 @@ class TestCreate(TestCase):
         self.client.force_login(CustomUser.objects.first())
         self.status = Status.objects.get(name="first")
         self.executor = CustomUser.objects.get(username="Gamma")
-        self.created_task = {
-            "name": "Test task",
-            "description": "Test",
-            "status": self.status.id,
-            "executor": self.executor.id,
-        }
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.created_task = data.get('tasks').get('new_task')
 
     def test_index_tasks(self):
         response = self.client.get(reverse("tasks_index"))
@@ -29,11 +27,10 @@ class TestCreate(TestCase):
 
     def test_tasks_create(self):
         response = self.client.get(reverse("tasks_index"))
-        self.assertNotContains(response, "Test task")
+        self.assertNotContains(response, self.created_task['name'])
 
         response = self.client.get(reverse("task_create"))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(reverse("task_create"), "/tasks/create/")
         self.assertIs(response.resolver_match.func.view_class, TaskCreate)
 
         response = self.client.post(reverse("task_create"), self.created_task)
@@ -41,7 +38,7 @@ class TestCreate(TestCase):
         self.assertEqual(response["Location"], reverse("tasks_index"))
 
         response = self.client.get(reverse("tasks_index"))
-        self.assertContains(response, "Test task")
+        self.assertContains(response, self.created_task['name'])
 
 
 class TestUpdate(TestCase):

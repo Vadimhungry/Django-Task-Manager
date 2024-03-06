@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -38,15 +37,3 @@ class IsAuthorMixin(UserPassesTestMixin):
     def handle_no_permission(self):
         messages.warning(self.request, self.no_permission_message)
         return redirect(self.no_permission_url)
-
-
-class ProtectedDeletionMixin:
-    protected_message = None
-    no_protected_redirect_url = None
-
-    def post(self, request, *args, **kwargs):
-        try:
-            return super().post(request, *args, **kwargs)
-        except ProtectedError:
-            messages.warning(self.request, self.protected_message)
-            return redirect(self.no_protected_redirect_url)

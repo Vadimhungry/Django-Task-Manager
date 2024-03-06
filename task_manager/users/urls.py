@@ -3,7 +3,7 @@ from .views import (
     IndexView,
     UserCreate,
     UserUpdateFormView,
-    UserDeleteFormView,
+    UserDelete,
 )
 
 
@@ -17,7 +17,7 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/delete/",
-        UserDeleteFormView.as_view(),
+        UserDelete.as_view(),
         name="delete_user"
     ),
 ]

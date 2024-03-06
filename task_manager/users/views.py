@@ -5,8 +5,10 @@ from django.views.generic.list import ListView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from task_manager.utils import (IsAuthorizedUserMixin, AuthRequiredMixin,
-                                ProtectedDeletionMixin)
+from task_manager.mixins import (IsAuthorizedUserMixin, AuthRequiredMixin)
+from django.db.models import ProtectedError
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 class IndexView(ListView):
@@ -26,6 +28,7 @@ class UserCreate(SuccessMessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Registration")
         context['action_url_name'] = "user_create"
+        context['button_name'] = _("Register")
         return context
 
 
@@ -44,12 +47,13 @@ class UserUpdateFormView(
         context = super().get_context_data(**kwargs)
         context['title'] = _("Update user")
         context['action_url_name'] = "user_update"
+        context['button_name'] = _("Update")
         return context
 
 
-class UserDeleteFormView(
+class UserDelete(
     AuthRequiredMixin, IsAuthorizedUserMixin,
-    ProtectedDeletionMixin, SuccessMessageMixin, DeleteView
+    SuccessMessageMixin, DeleteView
 ):
     model = CustomUser
     success_url = reverse_lazy("users_index")
@@ -57,11 +61,20 @@ class UserDeleteFormView(
     success_message = _("The user has been successfully deleted")
     no_permis_url = reverse_lazy("user_login")
     no_permis_message = _("You do not have permission to change another user.")
-    no_protected_redirect_url = reverse_lazy("users_index")
-    protected_message = _("Cannot delete user because it is in use")
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.warning(
+                self.request,
+                _("Cannot delete user because it is in use")
+            )
+            return redirect(reverse_lazy("users_index"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Delete user")
         context['action_url_name'] = "delete_user"
+        context['button_name'] = _("Yes, delete")
         return context

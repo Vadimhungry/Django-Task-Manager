@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from .views import UserCreate, UserUpdateFormView, UserDeleteFormView
+from .views import UserCreate, UserUpdateFormView, UserDelete
 from .forms import UserCreationForm, CustomUserCreationForm
 from django.contrib.auth import get_user_model
 import json
@@ -19,7 +19,10 @@ class TestCreateUser(TestCase):
 
     def test_create_user(self):
         response = self.client.get(reverse("users_index"))
-        self.assertNotContains(response, "Natasha Noga")
+        self.assertNotContains(
+            response,
+            f"{self.new_user['first_name']} {self.new_user['last_name']}"
+        )
 
         response = self.client.get(reverse("user_create"))
         self.assertIsInstance(response.context["form"], UserCreationForm)
@@ -33,7 +36,10 @@ class TestCreateUser(TestCase):
         self.assertEqual(response["Location"], reverse("user_login"))
 
         response = self.client.get(reverse("users_index"))
-        self.assertContains(response, "Natasha Noga")
+        self.assertContains(
+            response,
+            f"{self.new_user['first_name']} {self.new_user['last_name']}"
+        )
 
 
 class TestUpdateUser(TestCase):
@@ -72,7 +78,11 @@ class TestUpdateUser(TestCase):
         )
 
         response = self.client.get(reverse("users_index"))
-        self.assertContains(response, "Ulyana Umina")
+
+        self.assertContains(
+            response,
+            f"{self.new_user['first_name']} {self.new_user['last_name']}"
+        )
 
 
 class TestDeleteUser(TestCase):
@@ -90,7 +100,7 @@ class TestDeleteUser(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIs(
             response.resolver_match.func.view_class,
-            UserDeleteFormView
+            UserDelete
         )
 
         self.client.force_login(del_user)
@@ -101,7 +111,6 @@ class TestDeleteUser(TestCase):
         response = self.client.get(reverse("users_index"))
 
         messages = list(get_messages(response.wsgi_request))
-        print(messages)
         self.assertEqual(
             str(messages[1]),
             _("The user has been successfully deleted")

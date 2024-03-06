@@ -1,7 +1,26 @@
 {
+  "tasks": {
+    "new_task": {
+      "name": "Test task",
+      "description": "Test",
+      "status": 1,
+      "executor": 3
+    }
+  },
+  "statuses": {
+    "new_status": {
+      "name": "fun_status"
+    },
+    "updated_status": {
+      "name": "updated_fun_status"
+    }
+  },
   "labels": {
     "update_label": {
-      "name": "updated_label"
+      "name": "fun_updated_label"
+    },
+    "new_label": {
+      "name": "fresh_new"
     }
   },
   "users": {

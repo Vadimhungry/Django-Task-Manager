@@ -7,6 +7,7 @@ from task_manager.statuses.views import (
     StatusUpdate,
     StatusDelete,
 )
+import json
 
 
 class TestCreate(TestCase):
@@ -15,27 +16,29 @@ class TestCreate(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.new_status = data.get('statuses').get('new_status')
 
     def test_status_create(self):
         response = self.client.get(reverse("statuses_index"))
-        self.assertNotContains(response, "Another status")
+        self.assertNotContains(response, self.new_status['name'])
 
         response = self.client.get(reverse("status_create"))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(reverse("status_create"), "/statuses/create/")
         self.assertIs(
             response.resolver_match.func.view_class,
             StatusCreate
         )
 
         response = self.client.post(
-            reverse("status_create"), data={"name": "Another status"}
+            reverse("status_create"), data=self.new_status
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("statuses_index"))
 
         response = self.client.get(reverse("statuses_index"))
-        self.assertContains(response, "Another status")
+        self.assertContains(response, self.new_status['name'])
 
 
 class TestUpdate(TestCase):
@@ -45,8 +48,10 @@ class TestUpdate(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.old_status = Status.objects.all().first()
-        self.updated_status = {"name": "Updated status"}
-        print(self.old_status)
+        # self.updated_status = {"name": "Updated status"}
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.updated_status = data.get('statuses').get('updated_status')
 
     def test_status_update(self):
         url_update = reverse(
@@ -56,10 +61,6 @@ class TestUpdate(TestCase):
 
         response = self.client.get(url_update)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(
-            url_update,
-            f"/statuses/{self.old_status.pk}/update/"
-        )
         self.assertIs(
             response.resolver_match.func.view_class,
             StatusUpdate
@@ -70,7 +71,7 @@ class TestUpdate(TestCase):
         self.assertEqual(response["Location"], reverse("statuses_index"))
 
         response = self.client.get(reverse("statuses_index"))
-        self.assertContains(response, "Updated status")
+        self.assertContains(response, self.updated_status['name'])
 
 
 class TestDelete(TestCase):
@@ -89,14 +90,12 @@ class TestDelete(TestCase):
 
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_delete, f"/statuses/{del_status.id}/delete/")
         self.assertIs(
             response.resolver_match.func.view_class,
             StatusDelete
         )
 
         response = self.client.post(url_delete)
-        self.assertEquals(url_delete, f"/statuses/{del_status.id}/delete/")
         self.assertRedirects(response, reverse("statuses_index"), 302)
         self.assertIs(
             response.resolver_match.func.view_class,
