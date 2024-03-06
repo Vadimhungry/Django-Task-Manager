@@ -3,7 +3,7 @@
 {% load django_bootstrap5 %}
 {% block content %}
     <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">{% translate "Create a label" %}</h1>
+    <h1 class="my-4">{{ title }}</h1>
 
     {% if form.errors %}
         <div>
@@ -15,7 +15,7 @@
         </div>
     {% endif %}
 
-        <form action="{% url 'label_create' %}" method="post">
+        <form action="{% url action_url_name %}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
             {% translate 'Create' as button_name %}

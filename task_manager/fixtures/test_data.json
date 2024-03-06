@@ -3,5 +3,21 @@
     "update_label": {
       "name": "updated_label"
     }
+  },
+  "users": {
+    "new": {
+      "first_name": "Natasha",
+      "last_name": "Noga",
+      "username": "New",
+      "password1": "QwertySuperP@ssword3",
+      "password2": "QwertySuperP@ssword3"
+    },
+    "updated": {
+      "username": "Updated",
+      "first_name": "Ulyana",
+      "last_name": "Umina",
+      "password1": "2QwertySuperP@ssword3",
+      "password2": "2QwertySuperP@ssword3"
+    }
   }
 }

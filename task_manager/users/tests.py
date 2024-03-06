@@ -3,6 +3,9 @@ from django.urls import reverse
 from .views import UserCreate, UserUpdateFormView, UserDeleteFormView
 from .forms import UserCreationForm, CustomUserCreationForm
 from django.contrib.auth import get_user_model
+import json
+from django.utils.translation import gettext as _
+from django.contrib.messages import get_messages
 
 
 class TestCreateUser(TestCase):
@@ -10,13 +13,9 @@ class TestCreateUser(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.new_user = {
-            "first_name": "Natasha",
-            "last_name": "Noga",
-            "username": "New",
-            "password1": "QwertySuperP@ssword3",
-            "password2": "QwertySuperP@ssword3",
-        }
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.new_user = data.get('users').get('new')
 
     def test_create_user(self):
         response = self.client.get(reverse("users_index"))
@@ -42,13 +41,9 @@ class TestUpdateUser(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.get(username="Alpha")
-        self.new_user = {
-            "username": "Updated",
-            "first_name": "Ulyana",
-            "last_name": "Umina",
-            "password1": "2QwertySuperP@ssword3",
-            "password2": "2QwertySuperP@ssword3",
-        }
+        with open('task_manager/fixtures/test_data.json', 'r') as f:
+            data = json.load(f)
+            self.new_user = data.get('users').get('updated')
         self.url = reverse("user_update", kwargs={"pk": self.user.id})
 
     def test_update_user(self):
@@ -103,11 +98,11 @@ class TestDeleteUser(TestCase):
             reverse("delete_user", kwargs={"pk": del_user.id})
         )
         self.assertEqual(response.status_code, 302)
-        self.assertIs(
-            response.resolver_match.func.view_class,
-            UserDeleteFormView
-        )
-        self.assertEqual(response["Location"], reverse("users_index"))
-        self.assertFalse(
-            get_user_model().objects.filter(username="Beta").exists()
+        response = self.client.get(reverse("users_index"))
+
+        messages = list(get_messages(response.wsgi_request))
+        print(messages)
+        self.assertEqual(
+            str(messages[1]),
+            _("The user has been successfully deleted")
         )

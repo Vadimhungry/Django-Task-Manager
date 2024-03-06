@@ -22,7 +22,7 @@ class IndexView(LoginRequiredMixin, View):
 class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Label
     form_class = LabelCreateForm
-    template_name = "labels/create_label.html"
+    template_name = "create.html"
     success_url = reverse_lazy("labels_index")
     success_message = _("The label has been created successfully")
 
@@ -30,25 +30,39 @@ class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Create label")
+        context['action_url_name'] = "label_create"
+        return context
+
 
 class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Label
     form_class = LabelCreateForm
-    template_name = "labels/update_label.html"
+    template_name = "update.html"
     success_message = _("The label has been successfully updated")
     success_url = reverse_lazy("labels_index")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["pk"] = self.kwargs["pk"]
+        context['title'] = _("Update label")
+        context['action_url_name'] = "label_update"
         return context
 
 
 class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Label
     success_url = reverse_lazy("labels_index")
-    template_name = "labels/delete_label.html"
+    template_name = "delete.html"
     success_message = _("The label has been successfully deleted")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Delete label")
+        context['action_url_name'] = "label_delete"
+        return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

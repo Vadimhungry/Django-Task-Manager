@@ -3,9 +3,9 @@ from django.urls import reverse
 from .models import Status
 from task_manager.users.models import CustomUser
 from task_manager.statuses.views import (
-    StatusCreateFormView,
-    StatusUpdateFormView,
-    StatusDeleteFormView,
+    StatusCreate,
+    StatusUpdate,
+    StatusDelete,
 )
 
 
@@ -25,7 +25,7 @@ class TestCreate(TestCase):
         self.assertEquals(reverse("status_create"), "/statuses/create/")
         self.assertIs(
             response.resolver_match.func.view_class,
-            StatusCreateFormView
+            StatusCreate
         )
 
         response = self.client.post(
@@ -46,11 +46,12 @@ class TestUpdate(TestCase):
         self.client.force_login(CustomUser.objects.first())
         self.old_status = Status.objects.all().first()
         self.updated_status = {"name": "Updated status"}
+        print(self.old_status)
 
     def test_status_update(self):
         url_update = reverse(
             "status_update",
-            kwargs={"status_id": self.old_status.pk}
+            kwargs={"pk": self.old_status.id}
         )
 
         response = self.client.get(url_update)
@@ -61,7 +62,7 @@ class TestUpdate(TestCase):
         )
         self.assertIs(
             response.resolver_match.func.view_class,
-            StatusUpdateFormView
+            StatusUpdate
         )
 
         response = self.client.post(url_update, self.updated_status)
@@ -83,7 +84,7 @@ class TestDelete(TestCase):
         del_status = Status.objects.get(name="second")
         url_delete = reverse(
             "delete_status",
-            kwargs={"status_id": del_status.id}
+            kwargs={"pk": del_status.id}
         )
 
         response = self.client.get(url_delete)
@@ -91,7 +92,7 @@ class TestDelete(TestCase):
         self.assertEquals(url_delete, f"/statuses/{del_status.id}/delete/")
         self.assertIs(
             response.resolver_match.func.view_class,
-            StatusDeleteFormView
+            StatusDelete
         )
 
         response = self.client.post(url_delete)
@@ -99,7 +100,7 @@ class TestDelete(TestCase):
         self.assertRedirects(response, reverse("statuses_index"), 302)
         self.assertIs(
             response.resolver_match.func.view_class,
-            StatusDeleteFormView
+            StatusDelete
         )
         self.assertEqual(response["Location"], reverse("statuses_index"))
         self.assertFalse(Status.objects.filter(name="second").exists())

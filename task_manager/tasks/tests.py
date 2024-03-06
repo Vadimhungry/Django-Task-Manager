@@ -61,7 +61,7 @@ class TestUpdate(TestCase):
         }
 
     def test_tasks_update(self):
-        url_update = reverse("task_update", kwargs={"task_id": self.task.id})
+        url_update = reverse("task_update", kwargs={"pk": self.task.id})
 
         response = self.client.get(reverse("tasks_index"))
         self.assertNotContains(response, "updated task")
@@ -93,7 +93,7 @@ class TestDelete(TestCase):
 
         url_delete = reverse(
             "task_delete",
-            kwargs={"task_id": self.del_task.id}
+            kwargs={"pk": self.del_task.id}
         )
 
         response = self.client.get(url_delete)

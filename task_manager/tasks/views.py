@@ -26,7 +26,7 @@ class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskCreateForm
-    template_name = "tasks/create_task.html"
+    template_name = "create.html"
     success_url = reverse_lazy("tasks_index")
 
     def form_valid(self, form):
@@ -34,17 +34,29 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Create task")
+        context['action_url_name'] = "task_create"
+        return context
+
 
 class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskCreateForm
-    template_name = "tasks/update_task.html"
+    template_name = "update.html"
     success_message = _("Task successfully updated")
     success_url = reverse_lazy("tasks_index")
 
     def get_object(self, queryset=None):
-        task_id = self.kwargs.get("task_id")
+        task_id = self.kwargs.get("pk")
         return get_object_or_404(Task, id=task_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Update task")
+        context['action_url_name'] = "task_update"
+        return context
 
 
 class TaskDelete(
@@ -52,17 +64,23 @@ class TaskDelete(
 ):
     model = Task
     success_url = reverse_lazy("tasks_index")
-    template_name = "tasks/delete_task.html"
+    template_name = "delete.html"
     success_message = _("The task has been successfully deleted")
 
     def test_func(self):
-        task_id = self.kwargs.get("task_id")
+        task_id = self.kwargs.get("pk")
         task = Task.objects.get(id=task_id)
         return task.author == self.request.user
 
     def get_object(self, queryset=None):
-        task_id = self.kwargs.get("task_id")
-        return get_object_or_404(Task, id=task_id)
+        pk = self.kwargs.get("pk")
+        return get_object_or_404(Task, id=pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Delete task")
+        context['action_url_name'] = "task_delete"
+        return context
 
     def handle_no_permission(self):
         messages.warning(
