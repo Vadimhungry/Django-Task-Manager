@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView
-from .forms import CustomAuthForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.views import LogoutView
@@ -15,7 +15,7 @@ def index(request):
 
 
 class UserLoginView(LoginView):
-    form_class = CustomAuthForm
+    form_class = AuthenticationForm
     template_name = "login.html"
     next_page = "index"
 

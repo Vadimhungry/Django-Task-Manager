@@ -1,13 +1,15 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Status
+from task_manager.tasks.models import Task
 from task_manager.users.models import CustomUser
 from task_manager.statuses.views import (
     StatusCreate,
     StatusUpdate,
     StatusDelete,
 )
-import json
+from ..utils import get_json_data
+from django.utils.translation import gettext as _
 
 
 class TestCreate(TestCase):
@@ -16,9 +18,8 @@ class TestCreate(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
-        with open('task_manager/fixtures/test_data.json', 'r') as f:
-            data = json.load(f)
-            self.new_status = data.get('statuses').get('new_status')
+        data = get_json_data('task_manager/fixtures/test_data.json')
+        self.new_status = data.get('statuses').get('new_status')
 
     def test_status_create(self):
         response = self.client.get(reverse("statuses_index"))
@@ -32,10 +33,15 @@ class TestCreate(TestCase):
         )
 
         response = self.client.post(
-            reverse("status_create"), data=self.new_status
+            reverse("status_create"),
+            data=self.new_status,
+            follow=True
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], reverse("statuses_index"))
+
+        self.assertContains(
+            response,
+            _("Status successfully created")
+        )
 
         response = self.client.get(reverse("statuses_index"))
         self.assertContains(response, self.new_status['name'])
@@ -48,10 +54,8 @@ class TestUpdate(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.old_status = Status.objects.all().first()
-        # self.updated_status = {"name": "Updated status"}
-        with open('task_manager/fixtures/test_data.json', 'r') as f:
-            data = json.load(f)
-            self.updated_status = data.get('statuses').get('updated_status')
+        data = get_json_data('task_manager/fixtures/test_data.json')
+        self.updated_status = data.get('statuses').get('updated_status')
 
     def test_status_update(self):
         url_update = reverse(
@@ -66,9 +70,15 @@ class TestUpdate(TestCase):
             StatusUpdate
         )
 
-        response = self.client.post(url_update, self.updated_status)
-        self.assertRedirects(response, reverse("statuses_index"), 302)
-        self.assertEqual(response["Location"], reverse("statuses_index"))
+        response = self.client.post(
+            url_update,
+            self.updated_status,
+            follow=True
+        )
+        self.assertContains(
+            response,
+            _("Status successfully updated")
+        )
 
         response = self.client.get(reverse("statuses_index"))
         self.assertContains(response, self.updated_status['name'])
@@ -80,6 +90,8 @@ class TestDelete(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
+        self.status = Status.objects.get(name="second")
+        self.executor = CustomUser.objects.get(username="Alpha")
 
     def test_delete_statuses(self):
         del_status = Status.objects.get(name="second")
@@ -95,11 +107,40 @@ class TestDelete(TestCase):
             StatusDelete
         )
 
-        response = self.client.post(url_delete)
-        self.assertRedirects(response, reverse("statuses_index"), 302)
+        response = self.client.post(url_delete, follow=True)
+        self.assertContains(
+            response,
+            _("Status successfully deleted")
+        )
+
+        self.assertFalse(Status.objects.filter(name="second").exists())
+
+    def test_unsuccsessfull_delete(self):
+        Task.objects.create(
+            name="Test Task",
+            description="Test Description",
+            status=self.status,
+            executor=self.executor,
+            author=CustomUser.objects.first()
+        )
+
+        del_status = Status.objects.get(name="second")
+
+        url_delete = reverse(
+            "delete_status",
+            kwargs={"pk": del_status.id}
+        )
+
+        response = self.client.get(url_delete)
+        self.assertEquals(response.status_code, 200)
         self.assertIs(
             response.resolver_match.func.view_class,
             StatusDelete
         )
-        self.assertEqual(response["Location"], reverse("statuses_index"))
-        self.assertFalse(Status.objects.filter(name="second").exists())
+
+        response = self.client.post(url_delete, follow=True)
+        self.assertContains(
+            response,
+            _("Unable to delete the status because it is in use")
+        )
+        self.assertTrue(Status.objects.filter(name="second").exists())

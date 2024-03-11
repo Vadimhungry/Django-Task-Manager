@@ -4,7 +4,8 @@ from ..users.models import CustomUser
 from ..statuses.models import Status
 from django.test import TestCase, Client
 from .views import TaskCreate, TaskUpdate, TaskDelete
-import json
+from ..utils import get_json_data
+from django.utils.translation import gettext as _
 
 
 class TestCreate(TestCase):
@@ -15,9 +16,8 @@ class TestCreate(TestCase):
         self.client.force_login(CustomUser.objects.first())
         self.status = Status.objects.get(name="first")
         self.executor = CustomUser.objects.get(username="Gamma")
-        with open('task_manager/fixtures/test_data.json', 'r') as f:
-            data = json.load(f)
-            self.created_task = data.get('tasks').get('new_task')
+        data = get_json_data('task_manager/fixtures/test_data.json')
+        self.created_task = data.get('tasks').get('new_task')
 
     def test_index_tasks(self):
         response = self.client.get(reverse("tasks_index"))
@@ -33,10 +33,15 @@ class TestCreate(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIs(response.resolver_match.func.view_class, TaskCreate)
 
-        response = self.client.post(reverse("task_create"), self.created_task)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], reverse("tasks_index"))
-
+        response = self.client.post(
+            reverse("task_create"),
+            self.created_task,
+            follow=True
+        )
+        self.assertContains(
+            response,
+            _("Task successfully created")
+        )
         response = self.client.get(reverse("tasks_index"))
         self.assertContains(response, self.created_task['name'])
 
@@ -61,19 +66,24 @@ class TestUpdate(TestCase):
         url_update = reverse("task_update", kwargs={"pk": self.task.id})
 
         response = self.client.get(reverse("tasks_index"))
-        self.assertNotContains(response, "updated task")
+        self.assertNotContains(response, self.updated_task['name'])
 
         response = self.client.get(url_update)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_update, f"/tasks/{self.task.pk}/update/")
         self.assertIs(response.resolver_match.func.view_class, TaskUpdate)
 
-        response = self.client.post(url_update, self.updated_task)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], reverse("tasks_index"))
+        response = self.client.post(
+            url_update,
+            self.updated_task,
+            follow=True
+        )
+        self.assertContains(
+            response,
+            _("Task successfully updated")
+        )
 
         response = self.client.get(reverse("tasks_index"))
-        self.assertContains(response, "updated task")
+        self.assertContains(response, self.updated_task['name'])
 
 
 class TestDelete(TestCase):
@@ -83,6 +93,7 @@ class TestDelete(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.del_task = Task.objects.get(name="one")
+        self.undelateble_task = Task.objects.get(name="two")
 
     def test_delete_tasks(self):
         response = self.client.get(reverse("tasks_index"))
@@ -95,10 +106,27 @@ class TestDelete(TestCase):
 
         response = self.client.get(url_delete)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(url_delete, "/tasks/1/delete/")
         self.assertIs(response.resolver_match.func.view_class, TaskDelete)
 
-        response = self.client.post(url_delete)
-        self.assertRedirects(response, reverse("tasks_index"), 302)
-        self.assertEqual(response["Location"], reverse("tasks_index"))
+        response = self.client.post(
+            url_delete,
+            follow=True
+        )
+        self.assertContains(
+            response,
+            _("The task has been successfully deleted")
+        )
         self.assertFalse(Task.objects.filter(name="one").exists())
+
+    def test_unsuccsessfull_delete(self):
+
+        url_delete = reverse(
+            "task_delete",
+            kwargs={"pk": self.undelateble_task.id}
+        )
+
+        response = self.client.post(url_delete, follow=True)
+        self.assertContains(
+            response,
+            _("The task can only be deleted by its author")
+        )

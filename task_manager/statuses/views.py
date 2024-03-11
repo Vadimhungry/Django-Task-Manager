@@ -43,9 +43,12 @@ class StatusCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = _("Create status")
-        context['action_url_name'] = "status_create"
-        context['button_name'] = _("Create")
+        extra_context = {
+            'title': _("Create status"),
+            'action_url_name': "status_create",
+            'button_name': _("Create")
+        }
+        context.update(extra_context)
         return context
 
 
@@ -61,9 +64,12 @@ class StatusUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = _("Update status")
-        context['action_url_name'] = "status_update"
-        context['button_name'] = _("Update")
+        extra_context = {
+            'title': _("Update status"),
+            'action_url_name': "status_update",
+            'button_name': _("Update")
+        }
+        context.update(extra_context)
         return context
 
 
@@ -87,9 +93,12 @@ class StatusDelete(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = _("Delete status")
-        context['action_url_name'] = "delete_status"
-        context['button_name'] = _("Yes, delete")
+        extra_context = {
+            'title': _("Delete status"),
+            'action_url_name': "delete_status",
+            'button_name': _("Yes, delete")
+        }
+        context.update(extra_context)
         return context
 
     def handle_no_permission(self):

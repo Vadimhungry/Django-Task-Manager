@@ -10,13 +10,19 @@ This is a simple task manager built on Django. It features user registration, au
 3. `make migrations`
 
 ## Environment variables
-You should set three env variables
+You should set three env variables.
+The simplest way to set variables is to rename the project file ".env.example" to ".env"
+
+### Variables
+The ".env.example" file contains three variables:
 
 DJANGO_DEBUG=True/False
+
 SECRET_KEY="your_secret_key"
+
 ROLLBAR="your_rollbar_key"
 
-Additionally, you can use connect your database by setting variable:
+Additionally, you can connect your database by setting variable:
 DATABASE_URL="your_database_url"
 
 ## Language

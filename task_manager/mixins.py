@@ -15,19 +15,21 @@ class AuthRequiredMixin(SuccessMessageMixin, LoginRequiredMixin):
         return redirect(reverse_lazy("user_login"))
 
 
-class IsAuthorizedUserMixin(UserPassesTestMixin):
-    no_permis_message = None
-    no_permis_url = None
+class CanManageSelfObject(UserPassesTestMixin):
+    no_permission_message = None
+    no_permission_url = None
 
     def test_func(self):
+        print(self.get_object())
+        print(self.request.user)
         return self.get_object() == self.request.user
 
     def handle_no_permission(self):
-        messages.warning(self.request, self.no_permis_message)
-        return redirect(self.no_permis_url)
+        messages.warning(self.request, self.no_permission_message)
+        return redirect(self.no_permission_url)
 
 
-class IsAuthorMixin(UserPassesTestMixin):
+class CanManageCurrentTaskInstance(UserPassesTestMixin):
     no_permission_message = None
     no_permission_url = None
 
