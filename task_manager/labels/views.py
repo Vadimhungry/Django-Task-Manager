@@ -69,7 +69,7 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         extra_context = {
             'title': _("Delete label"),
-            'action_url_name': "label_update",
+            'action_url_name': "label_delete",
             'button_name': _("Yes, delete")
         }
         context.update(extra_context)
