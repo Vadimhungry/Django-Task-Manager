@@ -3,9 +3,11 @@ from django.urls import reverse
 from .views import UserCreate, UserDelete
 from .forms import UserCreationForm, CustomUserCreationForm
 from django.contrib.auth import get_user_model
-from ..utils import get_json_data
+from ..utils import get_fixture_data
 from django.utils.translation import gettext as _
 from .models import CustomUser
+from ..settings import FIXTURE_PATH
+import os
 
 
 class TestCreateUser(TestCase):
@@ -13,7 +15,7 @@ class TestCreateUser(TestCase):
 
     def setUp(self):
         self.client = Client()
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_user = data.get('users').get('new')
 
     def test_create_user(self):
@@ -52,11 +54,13 @@ class TestUpdateUser(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.get(username="Alpha")
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        self.another_user = get_user_model().objects.get(username="Beta")
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_user = data.get('users').get('updated')
         self.url = reverse("user_update", kwargs={"pk": self.user.id})
+        self.another_url = reverse("user_update", kwargs={"pk": self.another_user.id})
 
-    def test_update_user(self):
+    def test_update_user_success(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
 
@@ -83,6 +87,27 @@ class TestUpdateUser(TestCase):
             f"{self.new_user['first_name']} {self.new_user['last_name']}"
         )
 
+    def test_update_user_failure(self):
+
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertNotEquals(
+            self.url,
+            self.another_url
+        )
+        self.assertIsInstance(response.context["form"], CustomUserCreationForm)
+        self.client.force_login(self.user)
+        response = self.client.post(
+            self.another_url,
+            self.new_user,
+            follow=True
+        )
+        self.assertContains(
+            response,
+            _("You do not have permission to change another user.")
+        )
+
 
 class TestDeleteUser(TestCase):
     fixtures = ["users.json"]
@@ -90,7 +115,7 @@ class TestDeleteUser(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_delete_users(self):
+    def test_delete_user_success(self):
         del_user = get_user_model().objects.get(username="Beta")
         response = self.client.get(
             reverse("delete_user", kwargs={"pk": del_user.id})
@@ -114,9 +139,9 @@ class TestDeleteUser(TestCase):
 
         self.assertFalse(CustomUser.objects.filter(username="Beta").exists())
 
-    def test_unsuccsessfull_delete(self):
-        del_user = get_user_model().objects.get(username="Beta")
-        another_user = get_user_model().objects.get(username="Gamma")
+    def test_delete_user_failure(self):
+        del_user = get_user_model().objects.first()
+        another_user = get_user_model().objects.last()
         response = self.client.get(
             reverse("delete_user", kwargs={"pk": del_user.id})
         )
@@ -136,5 +161,4 @@ class TestDeleteUser(TestCase):
             response,
             _("You do not have permission to change another user.")
         )
-
-        self.assertTrue(CustomUser.objects.filter(username="Beta").exists())
+        self.assertTrue(get_user_model().objects.filter(id=del_user.id).exists())

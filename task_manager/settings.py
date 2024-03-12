@@ -176,3 +176,5 @@ ROLLBAR = {
     "code_version": "1.0",
     "root": BASE_DIR,
 }
+
+FIXTURE_PATH = 'task_manager/fixtures'

@@ -3,10 +3,10 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from django.contrib.messages.views import SuccessMessageMixin
 
 
-class AuthRequiredMixin(SuccessMessageMixin, LoginRequiredMixin):
+
+class AuthRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(
             self.request,
@@ -20,8 +20,6 @@ class CanManageSelfObject(UserPassesTestMixin):
     no_permission_url = None
 
     def test_func(self):
-        print(self.get_object())
-        print(self.request.user)
         return self.get_object() == self.request.user
 
     def handle_no_permission(self):

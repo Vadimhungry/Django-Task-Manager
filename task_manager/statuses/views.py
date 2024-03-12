@@ -36,20 +36,15 @@ class StatusCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = "create.html"
     success_url = reverse_lazy("statuses_index")
     success_message = _("Status successfully created")
+    extra_context = {
+        'title': _("Create status"),
+        'action_url_name': "status_create",
+        'button_name': _("Create")
+    }
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Create status"),
-            'action_url_name': "status_create",
-            'button_name': _("Create")
-        }
-        context.update(extra_context)
-        return context
 
 
 class StatusUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -58,19 +53,14 @@ class StatusUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = "update.html"
     success_message = _("Status successfully updated")
     success_url = reverse_lazy("statuses_index")
+    extra_context = {
+        'title': _("Update status"),
+        'action_url_name': "status_update",
+        'button_name': _("Update")
+    }
 
     def handle_no_permission(self):
         return redirect("user_login")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Update status"),
-            'action_url_name': "status_update",
-            'button_name': _("Update")
-        }
-        context.update(extra_context)
-        return context
 
 
 class StatusDelete(
@@ -80,6 +70,11 @@ class StatusDelete(
     success_url = reverse_lazy("statuses_index")
     template_name = "delete.html"
     success_message = _("Status successfully deleted")
+    extra_context = {
+        'title': _("Delete status"),
+        'action_url_name': "delete_status",
+        'button_name': _("Yes, delete")
+    }
 
     def test_func(self):
         current_user = self.request.user
@@ -91,15 +86,6 @@ class StatusDelete(
         status_id = self.kwargs.get("pk")
         return get_object_or_404(Status, id=status_id)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Delete status"),
-            'action_url_name': "delete_status",
-            'button_name': _("Yes, delete")
-        }
-        context.update(extra_context)
-        return context
 
     def handle_no_permission(self):
         return redirect("user_login")

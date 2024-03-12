@@ -4,8 +4,10 @@ from ..users.models import CustomUser
 from ..statuses.models import Status
 from django.test import TestCase, Client
 from .views import TaskCreate, TaskUpdate, TaskDelete
-from ..utils import get_json_data
+from ..utils import get_fixture_data
 from django.utils.translation import gettext as _
+from ..settings import FIXTURE_PATH
+import os
 
 
 class TestCreate(TestCase):
@@ -16,7 +18,7 @@ class TestCreate(TestCase):
         self.client.force_login(CustomUser.objects.first())
         self.status = Status.objects.get(name="first")
         self.executor = CustomUser.objects.get(username="Gamma")
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.created_task = data.get('tasks').get('new_task')
 
     def test_index_tasks(self):
@@ -95,7 +97,7 @@ class TestDelete(TestCase):
         self.del_task = Task.objects.get(name="one")
         self.undelateble_task = Task.objects.get(name="two")
 
-    def test_delete_tasks(self):
+    def test_delete_tasks_success(self):
         response = self.client.get(reverse("tasks_index"))
         self.assertContains(response, "one")
 
@@ -118,7 +120,7 @@ class TestDelete(TestCase):
         )
         self.assertFalse(Task.objects.filter(name="one").exists())
 
-    def test_unsuccsessfull_delete(self):
+    def test_delete_tasks_failture(self):
 
         url_delete = reverse(
             "task_delete",

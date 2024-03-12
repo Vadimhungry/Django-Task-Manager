@@ -13,7 +13,7 @@ from .filters import TaskFilter
 from django.views.generic.base import ContextMixin
 from django_filters.views import FilterView
 from django.utils.translation import gettext as _
-
+from ..mixins import CanManageCurrentTaskInstance
 
 class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     login_url = "user_login"
@@ -23,26 +23,21 @@ class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     template_name = "tasks/index.html"
 
 
-class TaskCreate(LoginRequiredMixin, CreateView):
+class TaskCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "create.html"
     success_url = reverse_lazy("tasks_index")
+    success_message = _("Task successfully created")
+    extra_context = {
+        'title': _("Create task"),
+        'action_url_name': "task_create",
+        'button_name': _("Create")
+    }
 
     def form_valid(self, form):
-        messages.success(self.request, _("Task successfully created"))
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Create task"),
-            'action_url_name': "task_create",
-            'button_name': _("Create")
-        }
-        context.update(extra_context)
-        return context
 
 
 class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -51,20 +46,11 @@ class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = "update.html"
     success_message = _("Task successfully updated")
     success_url = reverse_lazy("tasks_index")
-
-    def get_object(self, queryset=None):
-        task_id = self.kwargs.get("pk")
-        return get_object_or_404(Task, id=task_id)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Update task"),
-            'action_url_name': "task_update",
-            'button_name': _("Update")
-        }
-        context.update(extra_context)
-        return context
+    extra_context = {
+        'title': _("Update task"),
+        'action_url_name': "task_update",
+        'button_name': _("Update")
+    }
 
 
 class TaskDelete(
@@ -74,25 +60,21 @@ class TaskDelete(
     success_url = reverse_lazy("tasks_index")
     template_name = "delete.html"
     success_message = _("The task has been successfully deleted")
+    extra_context = {
+        'title': _("Delete task"),
+        'action_url_name': "task_delete",
+        'button_name': _("Yes, delete")
+    }
 
     def test_func(self):
         task_id = self.kwargs.get("pk")
         task = Task.objects.get(id=task_id)
         return task.author == self.request.user
 
+
     def get_object(self, queryset=None):
         pk = self.kwargs.get("pk")
         return get_object_or_404(Task, id=pk)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Delete task"),
-            'action_url_name': "task_delete",
-            'button_name': _("Yes, delete")
-        }
-        context.update(extra_context)
-        return context
 
     def handle_no_permission(self):
         messages.warning(

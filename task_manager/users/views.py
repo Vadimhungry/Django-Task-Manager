@@ -23,16 +23,11 @@ class UserCreate(SuccessMessageMixin, CreateView):
     template_name = "create.html"
     success_url = reverse_lazy("user_login")
     success_message = _("The user has been successfully registered")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Registration"),
-            'action_url_name': "user_create",
-            'button_name': _("Register")
-        }
-        context.update(extra_context)
-        return context
+    extra_context = {
+        'title': _("Registration"),
+        'action_url_name': "user_create",
+        'button_name': _("Register")
+    }
 
 
 class UserUpdateFormView(
@@ -48,16 +43,11 @@ class UserUpdateFormView(
     no_permission_message = _(
         "You do not have permission to change another user."
     )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Update user"),
-            'action_url_name': "user_update",
-            'button_name': _("Update")
-        }
-        context.update(extra_context)
-        return context
+    extra_context = {
+        'title': _("Update user"),
+        'action_url_name': "user_update",
+        'button_name': _("Update")
+    }
 
 
 class UserDelete(
@@ -72,6 +62,11 @@ class UserDelete(
     no_permission_message = _(
         "You do not have permission to change another user."
     )
+    extra_context = {
+        'title': _("Delete user"),
+        'action_url_name': "delete_user",
+        'button_name': _("Yes, delete")
+    }
 
     def post(self, request, *args, **kwargs):
         try:
@@ -82,13 +77,3 @@ class UserDelete(
                 _("Cannot delete user because it is in use")
             )
             return redirect(reverse_lazy("users_index"))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Delete user"),
-            'action_url_name': "delete_user",
-            'button_name': _("Yes, delete")
-        }
-        context.update(extra_context)
-        return context

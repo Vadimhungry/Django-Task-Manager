@@ -25,20 +25,15 @@ class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = "create.html"
     success_url = reverse_lazy("labels_index")
     success_message = _("The label has been created successfully")
+    extra_context = {
+        'title': _("Create label"),
+        'action_url_name': "label_create",
+        'button_name': _("Create")
+    }
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Create label"),
-            'action_url_name': "label_create",
-            'button_name': _("Create")
-        }
-        context.update(extra_context)
-        return context
 
 
 class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -47,16 +42,11 @@ class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = "update.html"
     success_message = _("The label has been successfully updated")
     success_url = reverse_lazy("labels_index")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Update label"),
-            'action_url_name': "label_update",
-            'button_name': _("Update")
-        }
-        context.update(extra_context)
-        return context
+    extra_context = {
+        'title': _("Update label"),
+        'action_url_name': "label_update",
+        'button_name': _("Update")
+    }
 
 
 class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -64,16 +54,12 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("labels_index")
     template_name = "delete.html"
     success_message = _("The label has been successfully deleted")
+    extra_context = {
+        'title': _("Delete label"),
+        'action_url_name': "label_delete",
+        'button_name': _("Yes, delete")
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = {
-            'title': _("Delete label"),
-            'action_url_name': "label_delete",
-            'button_name': _("Yes, delete")
-        }
-        context.update(extra_context)
-        return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

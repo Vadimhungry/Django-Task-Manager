@@ -8,8 +8,10 @@ from task_manager.statuses.views import (
     StatusUpdate,
     StatusDelete,
 )
-from ..utils import get_json_data
+from ..utils import get_fixture_data
 from django.utils.translation import gettext as _
+from ..settings import FIXTURE_PATH
+import os
 
 
 class TestCreate(TestCase):
@@ -18,7 +20,7 @@ class TestCreate(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_status = data.get('statuses').get('new_status')
 
     def test_status_create(self):
@@ -54,7 +56,7 @@ class TestUpdate(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.old_status = Status.objects.all().first()
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.updated_status = data.get('statuses').get('updated_status')
 
     def test_status_update(self):

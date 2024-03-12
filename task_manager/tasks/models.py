@@ -3,13 +3,14 @@ from ..users.models import CustomUser
 from ..statuses.models import Status
 from ..labels.models import Label
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 
 class Task(models.Model):
     name = models.CharField(max_length=200, verbose_name=_("Name"))
     description = models.TextField(verbose_name=_("Description"))
     executor = models.ForeignKey(
-        CustomUser,
+        get_user_model(),
         on_delete=models.PROTECT,
         related_name="authored_tasks",
         blank=True,
@@ -17,7 +18,7 @@ class Task(models.Model):
         null=True,
     )
     author = models.ForeignKey(
-        CustomUser,
+        get_user_model(),
         on_delete=models.PROTECT,
         related_name="performed_tasks",
         verbose_name=_("Author"),

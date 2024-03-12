@@ -6,7 +6,10 @@ from task_manager.tasks.models import Task
 from .views import LabelCreate, LabelUpdate, LabelDelete
 from django.utils.translation import gettext as _
 from ..statuses.models import Status
-from ..utils import get_json_data
+from ..utils import get_fixture_data
+from ..settings import FIXTURE_PATH
+import os
+
 
 
 class TestCreate(TestCase):
@@ -24,7 +27,7 @@ class TestCreate(TestCase):
 
     def test_labels_create(self):
         response = self.client.get(reverse("labels_index"))
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_label = data.get('labels').get('new_label')
         self.assertNotContains(response, self.new_label['name'])
 
@@ -52,7 +55,7 @@ class TestUpdate(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.old_label = Label.objects.get(id=1)
-        data = get_json_data('task_manager/fixtures/test_data.json')
+        data = get_fixture_data('task_manager/fixtures/test_data.json')
         self.updated_label = data.get('labels').get('update_label')
 
     def test_label_update(self):

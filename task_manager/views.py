@@ -4,7 +4,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.views import LogoutView
-from django.contrib.messages.views import SuccessMessageMixin
 
 
 def index(request):
@@ -24,7 +23,7 @@ class UserLoginView(LoginView):
         return super().form_valid(form)
 
 
-class CustomLogout(SuccessMessageMixin, LogoutView):
+class CustomLogout(LogoutView):
     next_page = "index"
 
     def post(self, request, *args, **kwargs):
