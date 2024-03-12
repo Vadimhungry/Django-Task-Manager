@@ -60,7 +60,6 @@ class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'button_name': _("Yes, delete")
     }
 
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         connected_task_exist = self.object.task_set.exists()

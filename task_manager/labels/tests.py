@@ -11,7 +11,6 @@ from ..settings import FIXTURE_PATH
 import os
 
 
-
 class TestCreate(TestCase):
     fixtures = ["labels.json", "users.json"]
 

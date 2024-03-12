@@ -86,7 +86,6 @@ class StatusDelete(
         status_id = self.kwargs.get("pk")
         return get_object_or_404(Status, id=status_id)
 
-
     def handle_no_permission(self):
         return redirect("user_login")
 

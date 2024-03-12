@@ -58,7 +58,10 @@ class TestUpdateUser(TestCase):
         data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_user = data.get('users').get('updated')
         self.url = reverse("user_update", kwargs={"pk": self.user.id})
-        self.another_url = reverse("user_update", kwargs={"pk": self.another_user.id})
+        self.another_url = reverse(
+            "user_update",
+            kwargs={"pk": self.another_user.id}
+        )
 
     def test_update_user_success(self):
         self.client.force_login(self.user)
@@ -161,4 +164,6 @@ class TestDeleteUser(TestCase):
             response,
             _("You do not have permission to change another user.")
         )
-        self.assertTrue(get_user_model().objects.filter(id=del_user.id).exists())
+        self.assertTrue(
+            get_user_model().objects.filter(id=del_user.id).exists()
+        )

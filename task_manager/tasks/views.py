@@ -1,10 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.views import View
 from .models import Task
 from .forms import TaskCreateForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
@@ -14,6 +11,8 @@ from django.views.generic.base import ContextMixin
 from django_filters.views import FilterView
 from django.utils.translation import gettext as _
 from ..mixins import CanManageCurrentTaskInstance
+from django.views.generic import DetailView
+
 
 class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     login_url = "user_login"
@@ -54,7 +53,8 @@ class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 
 class TaskDelete(
-    SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView
+    SuccessMessageMixin, LoginRequiredMixin,
+    CanManageCurrentTaskInstance, DeleteView
 ):
     model = Task
     success_url = reverse_lazy("tasks_index")
@@ -66,16 +66,6 @@ class TaskDelete(
         'button_name': _("Yes, delete")
     }
 
-    def test_func(self):
-        task_id = self.kwargs.get("pk")
-        task = Task.objects.get(id=task_id)
-        return task.author == self.request.user
-
-
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get("pk")
-        return get_object_or_404(Task, id=pk)
-
     def handle_no_permission(self):
         messages.warning(
             self.request,
@@ -84,8 +74,6 @@ class TaskDelete(
         return HttpResponseRedirect(reverse("tasks_index"))
 
 
-class TaskRead(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        task_id = self.kwargs.get("pk")
-        task = Task.objects.get(id=task_id)
-        return render(request, "tasks/task.html", context={"task": task})
+class TaskRead(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = "tasks/task.html"

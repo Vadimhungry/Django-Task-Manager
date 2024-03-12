@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 
 
-
 class AuthRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(
