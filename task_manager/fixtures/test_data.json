@@ -5,6 +5,10 @@
       "description": "Test",
       "status": 1,
       "executor": 3
+    },
+    "update_task": {
+      "name": "Test update task",
+      "description": "Test update"
     }
   },
   "statuses": {

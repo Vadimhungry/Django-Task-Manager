@@ -53,8 +53,11 @@ class TestUpdateUser(TestCase):
     fixtures = ["users.json"]
 
     def setUp(self):
-        self.user = get_user_model().objects.get(username="Alpha")
-        self.another_user = get_user_model().objects.get(username="Beta")
+        self.user = get_user_model().objects.first()
+        self.another_user = get_user_model().objects.exclude(
+            username=self.user.username
+        ).first()
+
         data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
         self.new_user = data.get('users').get('updated')
         self.url = reverse("user_update", kwargs={"pk": self.user.id})

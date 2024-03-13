@@ -1,36 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
+from django.shortcuts import redirect
 from .forms import StatusCreateForm
 from .models import Status
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.db.models.deletion import ProtectedError
 from django.utils.translation import gettext as _
+from task_manager.mixins import AuthRequiredMixin
 
 
-class IndexView(UserPassesTestMixin, View):
-    def test_func(self):
-        current_user = self.request.user
-        if current_user.is_authenticated:
-            return True
-        return False
-
-    def handle_no_permission(self):
-        return redirect("user_login")
-
-    def get(self, request, *args, **kwargs):
-        statuses = Status.objects.all()[:15]
-        return render(
-            request,
-            "statuses/index.html",
-            context={"statuses": statuses}
-        )
+class IndexView(AuthRequiredMixin, ListView):
+    model = Status
+    template_name = "statuses/index.html"
 
 
-class StatusCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+class StatusCreate(SuccessMessageMixin, AuthRequiredMixin, CreateView):
     model = Status
     form_class = StatusCreateForm
     template_name = "create.html"
@@ -47,7 +33,7 @@ class StatusCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class StatusUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+class StatusUpdate(SuccessMessageMixin, AuthRequiredMixin, UpdateView):
     model = Status
     form_class = StatusCreateForm
     template_name = "update.html"
@@ -59,12 +45,9 @@ class StatusUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'button_name': _("Update")
     }
 
-    def handle_no_permission(self):
-        return redirect("user_login")
-
 
 class StatusDelete(
-    SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView
+    SuccessMessageMixin, AuthRequiredMixin, DeleteView
 ):
     model = Status
     success_url = reverse_lazy("statuses_index")
@@ -75,19 +58,6 @@ class StatusDelete(
         'action_url_name': "delete_status",
         'button_name': _("Yes, delete")
     }
-
-    def test_func(self):
-        current_user = self.request.user
-        if current_user.is_authenticated:
-            return True
-        return False
-
-    def get_object(self, queryset=None):
-        status_id = self.kwargs.get("pk")
-        return get_object_or_404(Status, id=status_id)
-
-    def handle_no_permission(self):
-        return redirect("user_login")
 
     def post(self, request, *args, **kwargs):
         try:

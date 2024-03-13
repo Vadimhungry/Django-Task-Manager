@@ -1,12 +1,12 @@
 from django.urls import reverse
 from .models import Task
-from ..users.models import CustomUser
-from ..statuses.models import Status
+from task_manager.users.models import CustomUser
+from task_manager.statuses.models import Status
 from django.test import TestCase, Client
 from .views import TaskCreate, TaskUpdate, TaskDelete
-from ..utils import get_fixture_data
+from task_manager.utils import get_fixture_data
 from django.utils.translation import gettext as _
-from ..settings import FIXTURE_PATH
+from task_manager.settings import FIXTURE_PATH
 import os
 
 
@@ -16,16 +16,18 @@ class TestCreate(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
-        self.status = Status.objects.get(name="first")
-        self.executor = CustomUser.objects.get(username="Gamma")
-        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
-        self.created_task = data.get('tasks').get('new_task')
+        self.status = Status.objects.first()
+        self.executor = CustomUser.objects.last()
+        self.data = get_fixture_data(
+            os.path.join(FIXTURE_PATH, 'test_data.json')
+        )
+        self.created_task = self.data.get('tasks').get('new_task')
 
     def test_index_tasks(self):
         response = self.client.get(reverse("tasks_index"))
-        self.assertContains(response, "one")
-        self.assertContains(response, "two")
-        self.assertNotContains(response, "ghost")
+        tasks = Task.objects.all()
+        for task in tasks:
+            self.assertContains(response, task.name)
 
     def test_tasks_create(self):
         response = self.client.get(reverse("tasks_index"))
@@ -56,10 +58,15 @@ class TestUpdate(TestCase):
         self.client.force_login(CustomUser.objects.first())
         self.status = Status.objects.all().first()
         self.task = Task.objects.all().first()
-        self.executor = CustomUser.objects.get(username="Alpha")
+        self.executor = CustomUser.objects.first()
+        self.data = get_fixture_data(
+            os.path.join(FIXTURE_PATH, 'test_data.json')
+        ).get('tasks')
+        update_name = self.data.get('update_task').get('name')
+        update_description = self.data.get('update_task').get('description')
         self.updated_task = {
-            "name": "updated task",
-            "description": "Updated Description",
+            "name": update_name,
+            "description": update_description,
             "status": self.status.id,
             "executor": self.executor.id,
         }
@@ -94,12 +101,12 @@ class TestDelete(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
-        self.del_task = Task.objects.get(name="one")
-        self.undelateble_task = Task.objects.get(name="two")
+        self.del_task = Task.objects.first()
+        self.undelateble_task = Task.objects.last()
 
     def test_delete_tasks_success(self):
         response = self.client.get(reverse("tasks_index"))
-        self.assertContains(response, "one")
+        self.assertContains(response, self.del_task)
 
         url_delete = reverse(
             "task_delete",
@@ -118,7 +125,7 @@ class TestDelete(TestCase):
             response,
             _("The task has been successfully deleted")
         )
-        self.assertFalse(Task.objects.filter(name="one").exists())
+        self.assertFalse(Task.objects.filter(name=self.del_task).exists())
 
     def test_delete_tasks_failture(self):
 

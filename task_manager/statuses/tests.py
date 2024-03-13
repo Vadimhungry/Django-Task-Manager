@@ -8,9 +8,9 @@ from task_manager.statuses.views import (
     StatusUpdate,
     StatusDelete,
 )
-from ..utils import get_fixture_data
+from task_manager.utils import get_fixture_data
 from django.utils.translation import gettext as _
-from ..settings import FIXTURE_PATH
+from task_manager.settings import FIXTURE_PATH
 import os
 
 
@@ -92,14 +92,13 @@ class TestDelete(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
-        self.status = Status.objects.get(name="second")
-        self.executor = CustomUser.objects.get(username="Alpha")
+        self.status = Status.objects.last()
+        self.executor = CustomUser.objects.first()
 
     def test_delete_statuses(self):
-        del_status = Status.objects.get(name="second")
         url_delete = reverse(
             "delete_status",
-            kwargs={"pk": del_status.id}
+            kwargs={"pk": self.status.id}
         )
 
         response = self.client.get(url_delete)
@@ -115,18 +114,20 @@ class TestDelete(TestCase):
             _("Status successfully deleted")
         )
 
-        self.assertFalse(Status.objects.filter(name="second").exists())
+        self.assertFalse(Status.objects.filter(name=self.status).exists())
 
     def test_unsuccsessfull_delete(self):
+        data = get_fixture_data(os.path.join(FIXTURE_PATH, 'test_data.json'))
+        self.task = data.get('tasks').get('update_task')
         Task.objects.create(
-            name="Test Task",
-            description="Test Description",
+            name=self.task['name'],
+            description=self.task['description'],
             status=self.status,
             executor=self.executor,
             author=CustomUser.objects.first()
         )
 
-        del_status = Status.objects.get(name="second")
+        del_status = self.status
 
         url_delete = reverse(
             "delete_status",
@@ -145,4 +146,4 @@ class TestDelete(TestCase):
             response,
             _("Unable to delete the status because it is in use")
         )
-        self.assertTrue(Status.objects.filter(name="second").exists())
+        self.assertTrue(Status.objects.filter(name=self.status).exists())

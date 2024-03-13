@@ -1,20 +1,18 @@
 from .models import Task
 from .forms import TaskCreateForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy, reverse
-from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from .filters import TaskFilter
 from django.views.generic.base import ContextMixin
 from django_filters.views import FilterView
 from django.utils.translation import gettext as _
-from ..mixins import CanManageCurrentTaskInstance
+from task_manager.mixins import CanManageCurrentTaskInstance
 from django.views.generic import DetailView
+from task_manager.mixins import AuthRequiredMixin
 
 
-class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
+class IndexView(AuthRequiredMixin, FilterView, ContextMixin):
     login_url = "user_login"
     model = Task
     form_class = TaskCreateForm
@@ -22,7 +20,7 @@ class IndexView(LoginRequiredMixin, FilterView, ContextMixin):
     template_name = "tasks/index.html"
 
 
-class TaskCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+class TaskCreate(SuccessMessageMixin, AuthRequiredMixin, CreateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "create.html"
@@ -39,7 +37,7 @@ class TaskCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+class TaskUpdate(SuccessMessageMixin, AuthRequiredMixin, UpdateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "update.html"
@@ -53,27 +51,25 @@ class TaskUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 
 class TaskDelete(
-    SuccessMessageMixin, LoginRequiredMixin,
+    AuthRequiredMixin, SuccessMessageMixin,
     CanManageCurrentTaskInstance, DeleteView
 ):
     model = Task
-    success_url = reverse_lazy("tasks_index")
     template_name = "delete.html"
+
+    success_url = reverse_lazy("tasks_index")
+    no_permission_url = reverse_lazy("tasks_index")
+
     success_message = _("The task has been successfully deleted")
+    no_permission_message = _("The task can only be deleted by its author")
+
     extra_context = {
         'title': _("Delete task"),
         'action_url_name': "task_delete",
         'button_name': _("Yes, delete")
     }
 
-    def handle_no_permission(self):
-        messages.warning(
-            self.request,
-            _("The task can only be deleted by its author")
-        )
-        return HttpResponseRedirect(reverse("tasks_index"))
 
-
-class TaskRead(LoginRequiredMixin, DetailView):
+class TaskRead(AuthRequiredMixin, DetailView):
     model = Task
     template_name = "tasks/task.html"

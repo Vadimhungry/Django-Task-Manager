@@ -14,7 +14,6 @@ from django.shortcuts import redirect
 class IndexView(ListView):
     model = CustomUser
     template_name = "users/index.html"
-    context_object_name = "users"
 
 
 class UserCreate(SuccessMessageMixin, CreateView):

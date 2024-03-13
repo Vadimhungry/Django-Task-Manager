@@ -5,9 +5,9 @@ from task_manager.users.models import CustomUser
 from task_manager.tasks.models import Task
 from .views import LabelCreate, LabelUpdate, LabelDelete
 from django.utils.translation import gettext as _
-from ..statuses.models import Status
-from ..utils import get_fixture_data
-from ..settings import FIXTURE_PATH
+from task_manager.statuses.models import Status
+from task_manager.utils import get_fixture_data
+from task_manager.settings import FIXTURE_PATH
 import os
 
 
@@ -20,9 +20,8 @@ class TestCreate(TestCase):
 
     def test_index_labels(self):
         response = self.client.get(reverse("labels_index"))
-        self.assertContains(response, "label_1")
-        self.assertContains(response, "label_2")
-        self.assertNotContains(response, "ghost")
+        for label in Label.objects.all():
+            self.assertContains(response, label)
 
     def test_labels_create(self):
         response = self.client.get(reverse("labels_index"))
@@ -88,11 +87,11 @@ class TestDelete(TestCase):
         self.client = Client()
         self.client.force_login(CustomUser.objects.first())
         self.del_label = Label.objects.all().first()
-        self.undeletable_label = Label.objects.get(id=3)
+        self.undeletable_label = Label.objects.last()
 
     def test_delete_label(self):
         response = self.client.get(reverse("labels_index"))
-        self.assertContains(response, "label_1")
+        self.assertContains(response, self.del_label)
 
         url_delete = reverse(
             "label_delete",
@@ -109,7 +108,7 @@ class TestDelete(TestCase):
         )
 
         response = self.client.get(reverse("labels_index"))
-        self.assertNotContains(response, "label_1")
+        self.assertNotContains(response, self.del_label)
 
 
 class TestUnableDelete(TestCase):

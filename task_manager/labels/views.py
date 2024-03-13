@@ -1,25 +1,21 @@
-from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from .models import Label
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from .forms import LabelCreateForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.views.generic import ListView
+from task_manager.mixins import AuthRequiredMixin
 
 
-class IndexView(LoginRequiredMixin, View):
-    def handle_no_permission(self):
-        return redirect("user_login")
-
-    def get(self, request, *args, **kwargs):
-        labels = Label.objects.all()[:15]
-        return render(request, "labels/index.html", context={"labels": labels})
+class IndexView(AuthRequiredMixin, ListView):
+    model = Label
+    template_name = "labels/index.html"
 
 
-class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+class LabelCreate(SuccessMessageMixin, AuthRequiredMixin, CreateView):
     model = Label
     form_class = LabelCreateForm
     template_name = "create.html"
@@ -36,7 +32,7 @@ class LabelCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+class LabelUpdate(SuccessMessageMixin, AuthRequiredMixin, UpdateView):
     model = Label
     form_class = LabelCreateForm
     template_name = "update.html"
@@ -49,7 +45,7 @@ class LabelUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     }
 
 
-class LabelDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class LabelDelete(SuccessMessageMixin, AuthRequiredMixin, DeleteView):
     model = Label
     success_url = reverse_lazy("labels_index")
     template_name = "delete.html"
