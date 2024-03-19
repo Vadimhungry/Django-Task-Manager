@@ -5,7 +5,7 @@ ___
 This is a simple task manager built on Django. It features user registration, authentication, creation, modification, and deletion of statuses, labels, and tasks. Check working app here: [Task manager app](https://python-project-52-production-9e9a.up.railway.app/)
 
 ## Installation 
-1. `git clone git@github.com:Vadimhungry/python-project-52.git`
+1. `git clone git@github.com:Vadimhungry/Django-Task-Manager.git`
 2. `poetry install`
 3. `make migrations`
 
